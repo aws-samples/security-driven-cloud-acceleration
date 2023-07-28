@@ -1,0 +1,630 @@
+########################################################################
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+########################################################################
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#Security-Driven Cloud Acceleration Template Stack
+#Author: Christopher Rae (xrae@amazon.com)
+#Date: March 1st, 2023
+#———————————————————————————————————————————————————————————————————————————————————————
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#Description: This template deploys a CloudFormations nested stack. As it initiates, it calls to the AWS Security Hub, Amazon GuardDuty, AWS KMS, and AWS Shield Advanced. Where possible, best practices are configured and implemented. In cases where certain steps require manual intervention via AWS Console or other methods, they will be commented. 
+#———————————————————————————————————————————————————————————————————————————————————————
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#NOTE TO CUSTOMERS: Shield Advanced provides advanced DDoS protection. Enabling it gives you more protections and control beyond what AWS Shield Standard provides, including giving you access to use AWS WAF and Firewall Manager. Unlike other AWS services, it has a fixed monthly cost minimum of $3,000 USD. AWS strongly recommends implementing this for the protection of your workloads and accounts, however, by default it will be commented out in this CloudFormation template which requires you to manually opt-in on the service and the additional monthly costs. For more information about Shield Advanced visit https://aws.amazon.com/shield/features/. 
+#If you choose to not use AWS Shield Advanced as part of this stack, the remaining services of Security Hub, GuardDuty, and KMS will still be enabled and configured, and you will only be charged for the resources you consume.  
+#———————————————————————————————————————————————————————————————————————————————————————
+
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#Configure Conformance Packs To Enable Security and Privacy Best Practices As Part of Nested Stack
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Configure AWS Foundational Security Best Practices (FSBP)
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-Security-Services.yaml
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-Encryption-and-Keys.yaml
+#[INSERT THIS] https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Security-Best-Practices-for-AWS-WAF.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup Center for CISA Cyber Fundamentals 
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-CISA-Cyber-Essentials.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup Center for Internet Security (CIS) AWS Foundations Benchmark v1.4.0
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-CIS-AWS-v1.4-Level2.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Configure PCI Standard Best Practices 
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-PCI-DSS.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup NIST 800-53 rev 5 Security Standards
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-800-53-rev-5.yaml)
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup NIST Privacy Framework 1.0 Security Standards
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS] https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-Privacy-Framework.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+# Create A Nested Stack
+# Enable & Configure Security Hub
+# [INSERT link to sdca-securityhub.yaml]
+# Enable & Configure GuardDuty
+# [INSERT link to sdca-guardduty.yaml]
+# Enable & Configure KMS
+# [INSERT link to sdca-kms.yaml]
+# Enable & Configure Shield Advanced
+# ---Commented Out By Default
+# [INSERT link to sdca-shieldadvanced.yaml]
+#———————————————————————————————————————————————————————————————————————————————————————
+
+#——————————————————————————————————————————————————
+# Define and Enable Push Notifications
+#——————————————————————————————————————————————————
+#Subscribe to Security Hub announcements with Amazon Simple Notification Service (SNS)
+#Configure Lambda Functions
+#Set Email Alerts
+#——————————————————————————————————————————————————
+
+
+
+
+########################################################################
+# DO NOT EDIT BELOW THIS LINE
+########################################################################
+AWSTemplateFormatVersion: '2010-09-09'
+Description:
+  Creates the SRA CodeBuild Project that deploys the staging, common prerequisites, and other components of the SRA. -
+  'common_prerequisites' solution in the repo, https://github.com/aws-samples/aws-security-reference-architecture-examples (sra-1ssgnse2h)
+Metadata:
+  SRA:
+    Version: 1.0
+    Order: 3
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: General Properties
+        Parameters:
+          - pSRASolutionTagKey
+          - pSRASolutionName
+          - pSRAStagingS3BucketNamePrefix
+          - pAWSControlTowerExecutionRoleName
+          - pOrganizationId
+      # - Label:
+      #     default: AWS Organization ID - Lambda Function Properties
+      #   Parameters:
+      #     - pOrgIdLambdaRoleName
+      #     - pOrgIdLambdaFunctionName
+      - Label:
+          default: General Lambda Function Properties
+        Parameters:
+          # - pCreateLambdaLogGroup
+          - pLambdaLogGroupRetention
+          - pLambdaLogGroupKmsKey
+          - pLambdaLogLevel
+      - Label:
+          default: CodeBuild Properties
+        Parameters:
+          - pCodeBuildGitCloneProjectName
+          - pCodeBuildRoleName
+      - Label:
+          default: AWS Code Build Project - Lambda Function Properties
+        Parameters:
+          - pCodeBuildProjectLambdaRoleName
+          - pCodeBuildProjectLambdaFunctionName
+      - Label:
+          default: SRA Solutions to deploy properties
+        Parameters:
+          - pDeployGuardDutySolution
+    ParameterLabels:
+      # pAWSControlTowerExecutionRoleName:
+      #   default: Control Tower Execution Role Name
+      # pCreateLambdaLogGroup:
+      #   default: Create Lambda Log Group
+      pLambdaLogGroupKmsKey:
+        default: (Optional) Lambda Logs KMS Key
+      # pLambdaLogGroupRetention:
+      #   default: Lambda Log Group Retention
+      # pLambdaLogLevel:
+      #   default: Lambda Log Level
+      # pOrgIdLambdaFunctionName:
+      #   default: AWS Organization ID - Lambda Function Name
+      # pOrgIdLambdaRoleName:
+      #   default: AWS Organization ID - Lambda Role Name
+      # pOrganizationId:
+      #   default: (Optional) AWS Organization ID
+      # pSRASolutionName:
+      #   default: SRA Solution Name
+      # pSRASolutionTagKey:
+      #   default: SRA Solution Tag Key
+      pSRAStagingS3BucketNamePrefix:
+        default: SRA Staging S3 Bucket Name Prefix
+      pCodeBuildGitCloneProjectName:
+        default: SRA CodeBuild Project Name
+      pCodeBuildRoleName:
+        default: SRA CodeBuild Role Name
+      pCodeBuildProjectLambdaRoleName:
+        default: SRA CodeBuild Project Lambda Role Name
+      pCodeBuildProjectLambdaFunctionName:
+        default: SRA CodeBuild Project Lambda Function Name
+      pDeployGuardDutySolution:
+        default: SRA Deploy GuardDuty Solution
+
+Parameters:
+  # pAWSControlTowerExecutionRoleName:
+  #   AllowedValues: [AWSControlTowerExecution]
+  #   Default: AWSControlTowerExecution
+  #   Description: The AWS Control Tower Execution IAM Role used to deploy resources within accounts
+  #   Type: String
+  # pCreateLambdaLogGroup:
+  #   AllowedValues: ['true', 'false']
+  #   Default: 'false'
+  #   Description:
+  #     Indicates whether a CloudWatch Log Group should be explicitly created for the Lambda function, to allow for setting a Log Retention and/or KMS
+  #     Key for encryption.
+  #   Type: String
+  pLambdaLogGroupKmsKey:
+    AllowedPattern: '^$|^arn:(aws[a-zA-Z-]*){1}:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'
+    ConstraintDescription: 'Key ARN example:  arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab'
+    Default: ''
+    Description:
+      (Optional) KMS Key ARN to use for encrypting the Lambda logs data. If empty, encryption is enabled with CloudWatch Logs managing the server-side
+      encryption keys.
+    Type: String
+  pLambdaLogGroupRetention:
+    AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+    Default: 14
+    Description: Specifies the number of days you want to retain log events
+    Type: String
+  pLambdaLogLevel:
+    AllowedValues: [INFO, ERROR, DEBUG]
+    Default: INFO
+    Description: Lambda Function Logging Level
+    Type: String
+  # pOrgIdLambdaFunctionName:
+  #   AllowedPattern: '^[\w-]{1,64}$'
+  #   ConstraintDescription: Max 64 alphanumeric characters. Also special characters supported [_, -]
+  #   Default: sra-org-id
+  #   Description: Lambda function name for getting the AWS Organization ID
+  #   Type: String
+  # pOrgIdLambdaRoleName:
+  #   AllowedPattern: '^[\w+=,.@-]{1,64}$'
+  #   ConstraintDescription: Max 64 alphanumeric characters. Also special characters supported [+, =, ., @, -].
+  #   Default: sra-org-id-lambda
+  #   Description: Lambda execution role for getting the AWS Organization ID
+  #   Type: String
+  # pOrganizationId:
+  #   AllowedPattern: '^$|^o-[a-z0-9]{10,32}$'
+  #   ConstraintDescription: Must start with 'o-' followed by from 10 to 32 lowercase letters or digits. (e.g. o-abc1234567)
+  #   Default: ''
+  #   Description: (Optional) AWS Organizations ID. If empty, custom resource will be deployed to determine the AWS Organization ID.
+  #   Type: String
+  pSRASolutionName:
+    AllowedValues: [sra-common-prerequisites]
+    Default: sra-common-prerequisites
+    Description: The SRA solution name. The default value is the folder name of the solution
+    Type: String
+  pSRASolutionTagKey:
+    AllowedValues: [sra-solution]
+    Default: sra-solution
+    Description: The SRA solution tag key applied to all resources created by the solution that support tagging. The value is the pSRASolutionName.
+    Type: String
+  pSRAStagingS3BucketNamePrefix:
+    AllowedValues: [sra-staging]
+    Default: sra-staging
+    Description:
+      SRA Staging S3 bucket name prefix for the SRA artifacts relevant to the solutions. (e.g., lambda zips, CloudFormation templates). The account
+      and region are added to the prefix <bucket-name-prefix>-<account-id>-<region>. Example = sra-staging-123456789012-us-east-1.
+    Type: String
+  pCodeBuildGitCloneProjectName:
+    AllowedValues: [sra-codebuild]
+    Default: sra-codebuild
+    Description:
+      SRA CodeBuild project name
+    Type: String
+  pCodeBuildRoleName:
+    AllowedValues: [sra-codebuild]
+    Default: sra-codebuild
+    Description:
+      SRA CodeBuild role name
+    Type: String
+  pCodeBuildProjectLambdaRoleName:
+    AllowedPattern: '^[\w+=,.@-]{1,64}$'
+    ConstraintDescription: Max 64 alphanumeric characters. Also special characters supported [+, =, ., @, -].
+    Default: sra-codebuild-project-lambda
+    Description: Lambda execution role for starting the code build project
+    Type: String
+  pCodeBuildProjectLambdaFunctionName:
+    AllowedPattern: '^[\w-]{1,64}$'
+    ConstraintDescription: Max 64 alphanumeric characters. Also special characters supported [_, -]
+    Default: sra-codebuild-project
+    Description: Lambda function name for starting the code build project
+    Type: String
+  pDeployGuardDutySolution:
+    AllowedValues:
+      - "True"
+      - "False"
+    Default: "True"
+    Description: SRA Deploy the GuardDuty Solution
+    Type: String
+
+Conditions:
+  # cCreateCustomResource: !Equals [!Ref pOrganizationId, '']
+  # cCreateLambdaLogGroup: !Equals [!Ref pCreateLambdaLogGroup, 'true']
+  # cCreateLambdaLogGroupAndCreateCustomResource: !And
+  #   - !Condition cCreateCustomResource
+  #   - !Condition cCreateLambdaLogGroup
+  cUsingKmsKey: !Not [!Equals [!Ref pLambdaLogGroupKmsKey, '']]
+  cUseGraviton: !Or
+    - !Equals [!Ref 'AWS::Region', ap-northeast-1]
+    - !Equals [!Ref 'AWS::Region', ap-south-1]
+    - !Equals [!Ref 'AWS::Region', ap-southeast-1]
+    - !Equals [!Ref 'AWS::Region', ap-southeast-2]
+    - !Equals [!Ref 'AWS::Region', eu-central-1]
+    - !Equals [!Ref 'AWS::Region', eu-west-1]
+    - !Equals [!Ref 'AWS::Region', eu-west-2]
+    - !Equals [!Ref 'AWS::Region', us-east-1]
+    - !Equals [!Ref 'AWS::Region', us-east-2]
+    - !Equals [!Ref 'AWS::Region', us-west-2]
+
+Resources:
+  rCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub '${pCodeBuildGitCloneProjectName}'
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Description: "Codebuild project to get SRA code from github"
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: AWS_DEFAULT_REGION
+            Value: !Ref AWS::Region
+          - Name: AWS_ACCOUNT_ID
+            Value: !Ref "AWS::AccountId"
+          - Name: SRA_DEPLOY_GUARDDUTY
+            Value: !Ref pDeployGuardDutySolution
+        Image: "aws/codebuild/standard:5.0"
+        PrivilegedMode: true
+        Type: "LINUX_CONTAINER"
+      ServiceRole: !GetAtt rCodeBuildRole.Arn
+      TimeoutInMinutes: 120
+      Source:
+        Type: NO_SOURCE
+        BuildSpec: !Sub |
+          version: 0.2
+          phases:
+            pre_build:
+              commands:
+                - echo Build started on `date`...
+            build:
+              commands:
+                - echo Build started on `date` in ${AWS::Region} region
+                - echo Cloning SRA repository...
+                - git clone https://github.com/aws-samples/aws-security-reference-architecture-examples.git
+                - ls
+                - aws sts get-caller-identity
+                - aws cloudformation deploy --template-file ./aws-security-reference-architecture-examples/aws_sra_examples/solutions/common/common_prerequisites/templates/sra-common-prerequisites-staging-s3-bucket.yaml --stack-name sra-common-prerequisites-staging-s3-bucket --capabilities CAPABILITY_NAMED_IAM
+                - ./aws-security-reference-architecture-examples/aws_sra_examples/utils/packaging_scripts/stage_solution.sh
+            post_build:
+              commands:
+                - echo Build completed on `date`
+
+# - aws cloudformation deploy --template-file ./aws-security-reference-architecture-examples/aws_sra_examples/solutions/common/common_prerequisites/templates/sra-common-prerequisites-management-account-parameters.yaml --stack-name sra-common-prerequisites-management-account-parameters --capabilities CAPABILITY_NAMED_IAM
+# - aws cloudformation deploy --template-file ./aws-security-reference-architecture-examples/aws_sra_examples/solutions/common/common_prerequisites/templates/sra-common-prerequisites-main-ssm.yaml --stack-name sra-common-prerequisites-main-ssm --capabilities CAPABILITY_NAMED_IAM
+# - if [ "$SRA_DEPLOY_GUARDDUTY" = "True" ]; then aws cloudformation deploy --template-file ./aws-security-reference-architecture-examples/aws_sra_examples/solutions/guardduty/guardduty_org/templates/sra-guardduty-org-main-ssm.yaml --stack-name sra-guardduty-org-main-ssm --capabilities CAPABILITY_NAMED_IAM; fi
+
+  rCommonPrerequisitesManagementAccountParametersStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: rStartCodeBuildProjectCustomResource
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      TemplateURL: !Sub
+        - https://${SRAStagingS3BucketName}.s3.${AWS::Region}.${AWS::URLSuffix}/${pSRASolutionName}/templates/sra-common-prerequisites-management-account-parameters.yaml
+        - SRAStagingS3BucketName: !Sub ${pSRAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}
+      Tags:
+        - Key: sra-solution
+          Value: !Ref pSRASolutionName
+
+  rCommonPrerequisitesMainSsm:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: rCommonPrerequisitesManagementAccountParametersStack
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      TemplateURL: !Sub
+        - https://${SRAStagingS3BucketName}.s3.${AWS::Region}.${AWS::URLSuffix}/${pSRASolutionName}/templates/sra-common-prerequisites-main-ssm.yaml
+        - SRAStagingS3BucketName: !Sub ${pSRAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}
+      Tags:
+        - Key: sra-solution
+          Value: !Ref pSRASolutionName
+
+  rCodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${pCodeBuildRoleName}'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "CodeBuildLogsRole"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
+        - PolicyName: "sra-codebuild-staging-s3-bucket-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${pSRAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${pSRAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}/*"
+      # TODO(liamschn): temporary access for testing -
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AdministratorAccess'
+
+  rStartCodeBuildProjectCustomResource:
+    DependsOn: rCodeBuildProject
+    Type: Custom::LambdaCustomResource
+    Version: '1.0'
+    Properties:
+      ServiceToken: !GetAtt rStartCodeBuildProjectLambdaFunction.Arn
+      SRA_DEPLOY_GUARDDUTY: !Ref pDeployGuardDutySolution
+
+  rStartCodeBuildProjectLambdaFunction:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: Lambda role provides access to CloudWatch Logs
+          - id: W89
+            reason: Lambda does not need to communicate with VPC resources.
+          - id: W92
+            reason: Lambda does not need reserved concurrent executions.
+      checkov:
+        skip:
+          - id: CKV_AWS_115
+            comment: Lambda does not need reserved concurrent executions.
+          - id: CKV_AWS_116
+            comment: DLQ not needed, as Lambda function only triggered by CloudFormation events.
+          - id: CKV_AWS_117
+            comment: Lambda does not need to communicate with VPC resources.
+          - id: CKV_AWS_173
+            comment: Environment variables are not sensitive.
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref pCodeBuildProjectLambdaFunctionName
+      Description: Start SRA codebuild project
+      Architectures: !If
+        - cUseGraviton
+        - [arm64]
+        - !Ref AWS::NoValue
+      Handler: index.lambda_handler
+      Role: !GetAtt rStartCodeBuildProjectLambdaRole.Arn
+      Runtime: python3.9
+      Timeout: 900
+      Environment:
+        Variables:
+          LOG_LEVEL: !Ref pLambdaLogLevel
+          CODE_BUILD_PROJECT_NAME: !Ref pCodeBuildGitCloneProjectName
+          SRA_DEPLOY_GUARDDUTY: !Ref pDeployGuardDutySolution
+      Tags:
+        - Key: !Ref pSRASolutionTagKey
+          Value: !Ref pSRASolutionName
+      Code:
+        ZipFile: |
+          # type: ignore
+          """Custom Resource to start codebuild project.
+
+          Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+          SPDX-License-Identifier: MIT-0
+          """
+          import logging
+          import os
+
+          import boto3
+          import cfnresponse
+          import time
+          from botocore.exceptions import ClientError
+
+          LOGGER = logging.getLogger(__name__)
+          log_level: str = os.environ.get("LOG_LEVEL", "ERROR")
+          LOGGER.setLevel(log_level)
+          CODE_BUILD_PROJECT_NAME: str = os.environ.get("CODE_BUILD_PROJECT_NAME")
+
+
+          def start_build():
+              """Start build job.
+
+              Returns:
+                  Response data for custom resource
+              """
+              management_account_session = boto3.Session()
+              codebuild_client = management_account_session.client("codebuild")
+              response = codebuild_client.start_build(projectName=CODE_BUILD_PROJECT_NAME)
+              LOGGER.info({"API_Call": "codebuild:StartBuild", "API_Response": response})
+              buildId = response["build"]["id"]
+              return wait_for_build([buildId], codebuild_client)
+
+
+          def wait_for_build(BuildId, client):
+              buildWaitStatus = "FAILURE_WAIT_TIMEOUT"
+              counter = 0
+              while counter < 30:
+                  time.sleep(10)
+                  counter = counter + 1
+                  buildStatus = get_build_status(BuildId, client)
+                  if buildStatus == "SUCCEEDED":
+                      buildWaitStatus = "SUCCESS"
+                      break
+                  elif buildStatus == "FAILED" or buildStatus == "FAULT" or buildStatus == "STOPPED" or buildStatus == "TIMED_OUT":
+                      buildWaitStatus = "FAILURE"
+                      break
+              return buildWaitStatus
+
+
+          def get_build_status(buildId, client):
+              build = client.batch_get_builds(ids=buildId)
+              return build["builds"][0]["buildStatus"]
+
+
+          def create_event(event, context):
+              try:
+                  data = {"data": start_build()}
+                  if data["data"] == "SUCCESS":
+                      cfnresponse.send(event, context, cfnresponse.SUCCESS, data, "CustomResourcePhysicalID")
+                  else:
+                      reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name} and CloudFormation Events'"
+                      cfnresponse.send(event, context, cfnresponse.FAILED, data, "CustomResourcePhysicalID")
+              except Exception:
+                  LOGGER.exception("Unexpected!")
+                  reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name}'"
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID", reason=reason)
+              return "CustomResourcePhysicalID"
+
+
+          def delete_event(event, context):
+              session = boto3.session.Session()
+              sts_client = boto3.client("sts")
+              REGION_NAME = session.region_name
+              CURRENT_ACCOUNT = sts_client.get_caller_identity().get("Account")
+              S3_STAGING_BUCKET_NAME = "sra-staging-" + CURRENT_ACCOUNT + "-" + REGION_NAME
+              s3_client = boto3.resource("s3")
+              staging_bucket = s3_client.Bucket(S3_STAGING_BUCKET_NAME)
+              try:
+                  bucket_versioning = staging_bucket.Versioning()
+                  if bucket_versioning.status == "Enabled":
+                      staging_bucket.object_versions.delete()
+                  else:
+                      staging_bucket.objects.all().delete()
+                  cfnresponse.send(event, context, cfnresponse.SUCCESS, {"delete_operation": "succeeded deleting s3 objects"}, "CustomResourcePhysicalID")
+              except ClientError as e:
+                  LOGGER.info(f"Delete objects error: {e}")
+                  reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name}'"
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {}, "CustomResourcePhysicalID", reason=reason)
+
+
+          def lambda_handler(event, context):
+              LOGGER.info(event)
+              if event["RequestType"] == "Create":
+                  LOGGER.info("CREATE EVENT!!")
+                  create_event(event, context)
+              if event["RequestType"] == "Update":
+                  LOGGER.info("UPDATE EVENT!!")
+              if event["RequestType"] == "Delete":
+                  LOGGER.info("DELETE EVENT!!")
+                  delete_event(event, context)
+
+  rStartCodeBuildProjectLambdaLogGroup:
+    DeletionPolicy: Retain
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${pCodeBuildProjectLambdaFunctionName}
+      KmsKeyId: !If
+        - cUsingKmsKey
+        - !Ref pLambdaLogGroupKmsKey
+        - !Ref AWS::NoValue
+      RetentionInDays: !Ref pLambdaLogGroupRetention
+
+  rStartCodeBuildProjectLambdaRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: Allow * in resource when required
+          - id: W28
+            reason: The role name is defined to identify automation resources
+    Properties:
+      RoleName: !Ref pCodeBuildProjectLambdaRoleName
+      Description: !Sub Role for '${pCodeBuildProjectLambdaRoleName}' Lambda function
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Tags:
+        - Key: !Ref pSRASolutionTagKey
+          Value: !Ref pSRASolutionName
+      Policies:
+        - PolicyName: codebuild-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: codebuildStartBuild
+                Effect: Allow
+                Action: 
+                  - codebuild:StartBuild
+                  - codebuild:BatchGetBuilds
+                Resource: '*'
+        - PolicyName: CloudWatchLogGroup-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: CloudWatchLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${pCodeBuildProjectLambdaFunctionName}:log-stream:*
+
+
+
+# Outputs:
+#   oOrganizationId:
+#     Condition: cCreateCustomResource
+#     Description: Organization ID
+#     Value: !GetAtt rStartCodeBuildProjectCustomResource.OrganizationId
+#   oOrgIdLambdaFunctionArn:
+#     Condition: cCreateCustomResource
+#     Description: AWS Organization ID Lambda Function ARN
+#     Value: !GetAtt rStartCodeBuildProjectLambdaFunction.Arn
+#   oOrgIdLambdaLogGroupArn:
+#     Condition: cCreateLambdaLogGroupAndCreateCustomResource
+#     Description: AWS Organization ID Lambda Log Group ARN
+#     Value: !GetAtt rStartCodeBuildProjectLambdaLogGroup.Arn
+#   oOrgIdLambdaRoleArn:
+#     Condition: cCreateCustomResource
+#     Description: AWS Organization ID Lambda Role ARN
+#     Value: !GetAtt rStartCodeBuildProjectLambdaRole.Arn
+#   oSRAStagingS3BucketName:
+#     Description: SRA Staging S3 Bucket Name SSM parameter
+#     Value: !GetAtt rSSMParameterSRAStagingS3BucketName.Value
+#   oSRAStagingS3BucketNamePrefix:
+#     Description: SRA Staging S3 Bucket Name Prefix SSM parameter
+#     Value: !GetAtt rSSMParameterSRAStagingS3BucketNamePrefix.Value
+
+

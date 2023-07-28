@@ -1,0 +1,99 @@
+########################################################################
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+########################################################################
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#Security-Driven Cloud Acceleration Template Stack for Amazon GuardDuty
+#Author: Christopher Rae (xrae@amazon.com)
+#Date: March 1st, 2023
+#———————————————————————————————————————————————————————————————————————————————————————
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#Configure Conformance Packs To Enable Security and Privacy Best Practices As Part of Nested Stack
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Configure AWS Foundational Security Best Practices (FSBP)
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-Security-Services.yaml
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-Encryption-and-Keys.yaml
+#[INSERT THIS] https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Security-Best-Practices-for-AWS-WAF.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup Center for CISA Cyber Fundamentals 
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-CISA-Cyber-Essentials.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup Center for Internet Security (CIS) AWS Foundations Benchmark v1.4.0
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-CIS-AWS-v1.4-Level2.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Configure PCI Standard Best Practices 
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-PCI-DSS.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup NIST 800-53 rev 5 Security Standards
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS]https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-800-53-rev-5.yaml)
+
+#———————————————————————————————————————————————————————————————————————————————————————
+#---Setup NIST Privacy Framework 1.0 Security Standards
+#———————————————————————————————————————————————————————————————————————————————————————
+#[INSERT THIS] https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-Privacy-Framework.yaml
+
+#———————————————————————————————————————————————————————————————————————————————————————
+# Enable Amazon GuardDuty & Configure Best Practices
+#———————————————————————————————————————————————————————————————————————————————————————
+
+    Type: AWS::GuardDuty::Detector
+    Properties:
+        Enable: True
+        FindingPublishingFrequency: FIFTEEN_MINUTES
+        Tags: "SDCA"
+    - parameter_key: pDeployGuardDutySolution
+        parameter_value: 'Yes'
+      - parameter_key: pDisableGuardDuty
+        parameter_value: 'No'
+      - parameter_key: pAutoEnableS3Logs
+        parameter_value: 'true'
+      - parameter_key: pGuardDutyFindingPublishingFrequency
+        parameter_value: 'FIFTEEN_MINUTES'
+      - parameter_key: pGuardDutyOrgDeliveryBucketPrefix
+        parameter_value: 'sra-guardduty-org-delivery'
+      - parameter_key: pGuardDutyOrgDeliveryKeyAlias
+        parameter_value: 'sra-guardduty-org-delivery-key'
+
+
+#Enable AWS S3 Protection
+S3Logs: 
+    CFNS3LogsConfiguration
+#Enable AWS EBS Protection
+ScanEc2InstanceWithFindings: 
+    CFNScanEc2InstanceWithFindingsConfiguration
+#Enable AWS EKS Protection
+ Kubernetes: 
+    CFNKubernetesConfiguration
+#Enable AWS RDS Protection 
+#Enable Malware Protection
+  MalwareProtection: 
+    CFNMalwareProtectionConfiguration
+
+#Enable Amazon GuardDuty On 100% Of Accounts & Workloads With Master & Member Hierarchy
+
+#Enable Amazon GuardDuty In All Regions
+
+#Set Findings Publishing Frequency To 15 Minutes
+
+
+#——————————————————————————————————————————————————
+# Define and Enable Push Notifications
+#——————————————————————————————————————————————————
+#Subscribe to AWS Security Hub announcements with Amazon Simple Notification Service (SNS)
+#Configure AWS Lambda Functions
+#Set Email Alerts
+#——————————————————————————————————————————————————
