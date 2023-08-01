@@ -28,9 +28,9 @@ The following services may used in the provisioning and usage of SDCA, but are n
 The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
 
 ## Measuring Results
-•	Increased customer security posture through AWS Trusted Advisor scores. 
-•	Compression of migration timelines, account creation, service activation, and security best practices enablement. 
-•	Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through security automation.
+* Increased customer security posture through AWS Trusted Advisor scores. 
+* Compression of migration timelines, account creation, service activation, and security best practices enablement. 
+* Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through security automation.
    
 ## Availability & Further Information
 This is scheduled for release as a POC in Q3 2023 as a combination of the IaC templates, a customer-facing first call deck (FCD), and blogs in the AWS Security Blog channel and co-promotion in the AWS blog channels for workloads such as Containers, AI/ML, Storage, and more. AWS Partners will get a preview to assist with early joint adoption and feedback. 
