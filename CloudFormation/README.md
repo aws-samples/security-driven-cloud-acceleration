@@ -77,8 +77,7 @@ Prepare and run the `aws cloudformation deploy` command to launch the template. 
 
 ###### IMPORTANT<!-- omit in toc -->
 
-- Be sure to alter the folder/path for the `sdca-setup.yaml` template-file appropriately (replace `[path to template file]`)
-- Be sure to put in the s3 bucket name (replace `<s3 bucket name from step 1>`)
+- Be sure to alter the folder/path for the `sdca-setup.yaml` template-file appropriately (replace `<path to template file>`)
 - Be sure to specify the proper parameter overrides and specify the alarm email address (`<email address>`)
 <!-- - If `AWS Organizations` is being used without AWS Control Tower, you must also specify the following parameter values as you create the stack:
   - `pControlTower` as `false`
