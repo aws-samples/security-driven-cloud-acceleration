@@ -3,6 +3,8 @@
 ## What Is It? 
 Security-Driven Cloud Acceleration (SDCA) is a set of infrastructure-as-code templates that embeds core AWS security best practices earlier in the customer journey into any workload, program, and industry solution. 
 
+![SDCA Reference Diagram](https://github.com/aws-samples/security-driven-cloud-acceleration/assets/5162627/c6157010-a63b-4cb4-ad9e-b86b844ba3c3)
+
 ## What Are We Doing?
 The goal of SDCA is to help reduce friction for customers to “shift-left and automate” with security earlier in their journey. SDCA simplifies increasing security posture by applying the minimum AWS security recommendations to achieve a defense-in-depth strategy across any workload, program or industry solution. SDCA can be used by customers and partners to create a secure landing zone during migrations or be secure foundation for cloud native development. By making it easier, faster, and less expensive to increase security posture while embedding this with core workload services, SDCA will further increase customer confidence that AWS is the most secure cloud for innovation. 
 
