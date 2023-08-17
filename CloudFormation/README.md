@@ -41,7 +41,7 @@ Download the `sdca-setup.yaml` template by either navigating to it in the AWS SD
 ##### Example Download Command<!-- omit in toc -->
 
 ```bash
-curl -LJO https://raw.githubusercontent.com/security-driven-cloud-acceleration/main/CloudFormation/templates/sdca-setup.yaml
+curl -LJO https://raw.githubusercontent.com/aws-samples/security-driven-cloud-acceleration/main/CloudFormation/templates/sdca-setup.yaml
 ```
 
 #### II. (Option A) Deployment using the AWS Console
