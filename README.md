@@ -16,16 +16,19 @@ The primary deliverable of SDCA is a set of infrastructure-as-code (IaC) templat
 
 The following AWS services and best practices are the primary focus of the SDCA program:
 * AWS Security Hub
-* Amazon GuardDuty
+* Amazon GuardDuty (including protections for S3, EKS, RDS, Malware, and Lambda) 
 * Amazon Key Management Service (KMS)
-* AWS Shield Advanced.
+* AWS Shield Advanced (coming soon)
 
-The following services may used in the provisioning and usage of SDCA, but are not primary focus of the program. 
+The following services and solutions may used in the provisioning and usage of SDCA, but are not primary focus of the program. 
 * AWS Config (for Conformance Packages)
 * AWS CloudTrail (for logging and GuardDuty threat detection analysis)
+* AWS CodeBuild (for automated building of the SDCA stack and Security Reference Architecture code) 
 * AWS Control Tower (optional)
-* AWS Security Reference Architecture (SRA)
-* AWS CloudFormations and/or HashiCorp Terraform IaC formats
+* AWS Lambda (for automated building of the SDCA stack and Security Reference Architecture code)
+* Amazon S3 (used to create a staging bucket and for configuring logs)
+* AWS Security Reference Architecture (SRA) (As the engine of security best practices)
+* AWS CloudFormations and/or HashiCorp Terraform IaC formats (the two most popular IaC formats)
 
 The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually. 
 * AWS Firewall Manager
@@ -33,6 +36,13 @@ The following AWS services are NOT enabled by the SDCA sample code, but are incl
 
 ## Summary Of Design
 The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
+
+## How It Works - CloudFormations Version
+1/ Download the SDCA templates from GitHub
+2/ Use CloudFormations in AWS Console
+3/ It automatically creates an Amazon S3 staging bucket.
+4/ It automtiacally downloads the latest Security Reference Architecture code from the GitHub repo. 
+5/ It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
 
 ## Measuring Results
 * Increased customer security posture through AWS Trusted Advisor scores. 
