@@ -27,9 +27,9 @@ The following services may used in the provisioning and usage of SDCA, but are n
 * AWS Security Reference Architecture (SRA)
 * AWS CloudFormations and/or HashiCorp Terraform IaC formats
 
-The following services are NOT enabled and configured by SDCA, but which are included in the price of AWS Shield Advanced. These may be added to the product roadmap in the future for enablement with SDCA templates.
+The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually. 
 * AWS Firewall Manager
-* AWS WAF 
+* AWS WAF
 
 ## Summary Of Design
 The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
