@@ -1,0 +1,856 @@
+########################################################################
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+########################################################################
+AWSTemplateFormatVersion: '2010-09-09'
+Description:
+  Creates the SDCA CodeBuild Project that deploys the AWS SRA GuardDuty and Security Hub solutions (sdca-1u0pfn6c9)
+Metadata:
+  SRA:
+    Version: 1.0
+    Order: 1
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: General Properties
+        Parameters:
+          - pSDCASolutionTagKey
+          - pSDCASolutionName
+          - pSDCAStagingS3BucketNamePrefix
+      - Label:
+          default: Common Properties
+        Parameters:
+          - pSRAAlarmEmail
+          - pCreateAWSControlTowerExecutionRole
+      - Label:
+          default: CodeBuild Properties
+        Parameters:
+          - pCodeBuildProjectName
+          - pCodeBuildRoleName
+          - pCodeBuildLogGroupRetention
+          - pCodeBuildLogGroupKmsKey
+      - Label:
+          default: AWS Code Build Project - Lambda Function Properties
+        Parameters:
+          - pCodeBuildProjectLambdaRoleName
+          - pCodeBuildProjectLambdaFunctionName
+      - Label:
+          default: SRA Solutions to deploy (more settings for each are found below)
+        Parameters:
+          - pDeployConfigManagementSolution
+          - pDeployGuardDutySolution
+          - pDeploySecurityHubSolution
+      - Label:
+          default: AWS Config Management Solution
+        Parameters:
+          - pAllSupported 
+          - pFrequency
+          - pIncludeGlobalResourceTypes
+          - pKmsKeyArn
+          - pResourceTypes
+      - Label:
+          default: GuardDuty Solution
+        Parameters:
+          - pDisableGuardDuty
+          - pAutoEnableS3Logs
+          - pGuardDutyFindingPublishingFrequency
+          - pGuardDutyOrgDeliveryBucketPrefix
+          - pGuardDutyOrgDeliveryKeyAlias
+      - Label:
+          default: Security Hub Solution
+        Parameters:
+          - pDisableSecurityHub
+          - pEnableCISStandard
+          - pCISStandardVersion
+          - pEnablePCIStandard
+          - pEnableSecurityBestPracticesStandard
+          # - pEnableNISTStandard
+          # - pNISTStandardVersion
+          - pRegionLinkingMode
+      - Label:
+          default: General Lambda Function and EventBridge Properties
+        Parameters:
+          - pComplianceFrequency
+          - pCreateLambdaLogGroup 
+          - pLambdaLogGroupRetention
+          - pLambdaLogGroupKmsKey
+          - pLambdaLogLevel
+
+    ParameterLabels:
+      pSDCAStagingS3BucketNamePrefix:
+        default: SDCA Staging S3 Bucket Name Prefix
+      pSDCASolutionName:
+        default: SDCA Solution Name
+      pCodeBuildProjectName:
+        default: SDCA CodeBuild Project Name
+      pCodeBuildRoleName:
+        default: SDCA CodeBuild Role Name
+      pCodeBuildProjectLambdaRoleName:
+        default: SDCA CodeBuild Project Lambda Role Name
+      pCodeBuildProjectLambdaFunctionName:
+        default: SDCA CodeBuild Project Lambda Function Name
+      pAllSupported:  
+        default: All Supported
+      pAutoEnableS3Logs:  
+        default: Auto Enable S3 Logs
+      pCISStandardVersion:  
+        default: CIS Standard Version
+      pComplianceFrequency: 
+        default: Frequency to Check for Organizational Compliance
+      pCreateLambdaLogGroup: 
+        default: Create Lambda Log Group
+      pDisableGuardDuty:  
+        default: Disable GuardDuty
+      pDisableSecurityHub: 
+        default: Disable Security Hub
+      pEnableCISStandard: 
+        default: Enable CIS Standard
+      pEnablePCIStandard: 
+        default: Enable PCI Standard
+      pEnableSecurityBestPracticesStandard: 
+        default: Enable AWS Foundational Security Best Practices Standard
+      pFrequency: 
+        default: Frequency
+      pGuardDutyFindingPublishingFrequency: 
+        default: GuardDuty Finding Publishing Frequency
+      pGuardDutyOrgDeliveryBucketPrefix: 
+        default: GuardDuty Delivery Bucket Prefix
+      pGuardDutyOrgDeliveryKeyAlias: 
+        default: GuardDuty Delivery KMS Key Alias
+      pIncludeGlobalResourceTypes:  
+        default: Include Global Resource Types
+      pKmsKeyArn: 
+        default: (Optional) KMS Key ARN
+      pLambdaLogGroupKmsKey: 
+        default: (Optional) Lambda Log Group KMS Key
+      pLambdaLogGroupRetention: 
+        default: Lambda Log Group Retention
+      pLambdaLogLevel: 
+        default: Lambda Log Level
+      pRegionLinkingMode: 
+        default: Region Linking Mode
+      pSRAAlarmEmail: 
+        default: SRA Alarm Email
+      pCreateAWSControlTowerExecutionRole: 
+        default: Create AWS Control Tower Execution Role
+      pResourceTypes:
+        default: (Optional) Resource Types
+      # pEnableNISTStandard:
+      #   default: Enable NIST Standard
+      # pNISTStandardVersion:
+      #   default: NIST Standard Version
+      pCodeBuildLogGroupRetention:
+        default: CodeBuild Log Group Retention
+      pCodeBuildLogGroupKmsKey:
+        default: (Optional) CodeBuild Logs KMS Key
+
+Parameters:
+  pSDCAStagingS3BucketNamePrefix:
+    AllowedValues: [sdca-staging]
+    Default: sdca-staging
+    Description:
+      SDCA Staging S3 bucket name prefix for the SDCA artifacts relevant to the solutions. (e.g., lambda zips, CloudFormation templates). The account
+      and region are added to the prefix <bucket-name-prefix>-<account-id>-<region>. Example = sdca-staging-123456789012-us-east-1.
+    Type: String
+  pSDCASolutionName:
+    AllowedValues: [sdca]
+    Default: sdca
+    Description: The SDCA solution name.
+    Type: String
+  pSDCASolutionTagKey:
+    AllowedValues: [sdca-solution]
+    Default: sdca-solution
+    Description: The SDCA solution tag key applied to all resources created by the solution that support tagging. The value is the pSDCASolutionName.
+    Type: String
+  pCodeBuildProjectName:
+    AllowedValues: [sdca-codebuild-project]
+    Default: sdca-codebuild-project
+    Description:
+      SDCA CodeBuild project name
+    Type: String
+  pCodeBuildRoleName:
+    AllowedValues: [sdca-codebuild-role]
+    Default: sdca-codebuild-role
+    Description:
+      SDCA CodeBuild role name
+    Type: String
+  pCodeBuildProjectLambdaRoleName:
+    AllowedValues: [sdca-codebuild-project-lambda-role]
+    Default: sdca-codebuild-project-lambda-role
+    Description: Lambda execution role for starting the code build project
+    Type: String
+  pCodeBuildProjectLambdaFunctionName:
+    AllowedPattern: '^[\w-]{1,64}$'
+    ConstraintDescription: Max 64 alphanumeric characters. Also special characters supported [_, -]
+    Default: sdca-codebuild-project-lambda
+    Description: Lambda function name for starting the code build project
+    Type: String
+  pAllSupported:  
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: Indicates whether to record all supported resource types. If set to 'false', then the 'Resource Types' parameter must have a value.
+    Type: String
+  pAutoEnableS3Logs:  
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: Auto enable S3 logs
+    Type: String
+  pCISStandardVersion:  
+    AllowedValues: [1.2.0, 1.4.0]
+    Default: 1.4.0
+    Description: CIS Standard Version
+    Type: String
+  pComplianceFrequency: 
+    ConstraintDescription: Compliance Frequency must be a number between 1 and 30, inclusive.
+    Default: 7
+    Description: Frequency (in days between 1 and 30, default is 7) to check organizational compliance
+    MinValue: 1
+    MaxValue: 30
+    Type: Number
+  pCreateLambdaLogGroup: 
+    AllowedValues: ['Yes', 'No']
+    Default: 'No'
+    Description:
+      Indicates whether a CloudWatch Log Group should be explicitly created for the Lambda function, to allow for setting a Log Retention and/or KMS
+      Key for encryption.
+    Type: String
+  pDisableGuardDuty:  
+    AllowedValues: ['Yes', 'No']
+    Default: 'No'
+    Description: Disable the GuardDuty solution in all accounts and regions before deleting the stack.
+    Type: String
+  pDisableSecurityHub: 
+    AllowedValues: ['Yes', 'No']
+    Default: 'No'
+    Description: Disable the Security Hub solution in all accounts and regions before deleting the stack.
+    Type: String
+  pEnableCISStandard: 
+    AllowedValues: ['true', 'false']
+    Default: 'false'
+    Description: Indicates whether to enable the CIS AWS Foundations Benchmark Standard.
+    Type: String
+  pEnablePCIStandard: 
+    AllowedValues: ['true', 'false']
+    Default: 'false'
+    Description: Indicates whether to enable the Payment Card Industry Data Security Standard (PCI DSS).
+    Type: String
+  pEnableSecurityBestPracticesStandard: 
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: Indicates whether to enable the AWS Foundational Security Best Practices Standard.
+    Type: String
+  pFrequency: 
+    AllowedValues: [1hour, 3hours, 6hours, 12hours, 24hours]
+    Default: 1hour
+    Description: The frequency with which AWS Config delivers configuration snapshots.
+    Type: String
+  pGuardDutyFindingPublishingFrequency: 
+    AllowedValues: [FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS]
+    Default: FIFTEEN_MINUTES
+    Description: Finding publishing frequency
+    Type: String
+  pGuardDutyOrgDeliveryBucketPrefix: 
+    AllowedPattern: '^$|^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
+    ConstraintDescription:
+      S3 bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
+    Default: sra-guardduty-org-delivery
+    Description:
+      GuardDuty Delivery S3 bucket prefix. The account and region will get added to the end. e.g. sra-guardduty-delivery-123456789012-us-east-1
+    Type: String
+  pGuardDutyOrgDeliveryKeyAlias: 
+    Default: sra-guardduty-org-delivery-key
+    Description: GuardDuty Delivery KMS Key Alias
+    Type: String
+  pIncludeGlobalResourceTypes: 
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: Indicates whether AWS Config records all supported global resource types.
+    Type: String
+  pKmsKeyArn: 
+    AllowedPattern: '^$|^arn:(aws[a-zA-Z-]*)?:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'
+    ConstraintDescription: Key ARN example - arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
+    Default: ''
+    Description:
+      (Optional) KMS key ARN to use for encrypting the AWS Config configuration snapshots and history files when storing in the S3 bucket in the Log
+      Archive account. If empty, snapshots and history files will be encrypted based on the Default Encryption setting of the S3 bucket.
+    Type: String
+  pLambdaLogGroupKmsKey: 
+    AllowedPattern: '^$|^arn:(aws[a-zA-Z-]*){1}:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'
+    ConstraintDescription: 'Key ARN example:  arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab'
+    Default: ''
+    Description:
+      (Optional) KMS Key ARN to use for encrypting the Lambda logs data. If empty, encryption is enabled with CloudWatch Logs managing the server-side
+      encryption keys.
+    Type: String
+  pLambdaLogGroupRetention: 
+    AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+    Default: 14
+    Description: Specifies the number of days you want to retain log events
+    Type: String
+  pLambdaLogLevel: 
+    AllowedValues: [INFO, ERROR, DEBUG]
+    Default: INFO
+    Description: Lambda Function Logging Level
+    Type: String
+  pRegionLinkingMode: 
+    AllowedValues: [SPECIFIED_REGIONS, ALL_REGIONS]
+    Default: SPECIFIED_REGIONS
+    Description:
+      Indicates whether to aggregate findings from all of the available Regions in the current partition. Also determines whether to automatically
+      aggregate findings from new Regions as Security Hub supports them and you opt into them.
+    Type: String
+  pResourceTypes: 
+    AllowedPattern: '^$|^([a-zA-Z]+::[a-zA-Z]+::[a-zA-Z]+)$|^(([a-zA-Z]+::[a-zA-Z]+::[a-zA-Z]+(,|, ))*[a-zA-Z]+::[a-zA-Z]+::[a-zA-Z]+)$'
+    Default: ''
+    Description:
+      (Optional) A list of valid AWS resource types to include in this recording group. Eg. AWS::CloudTrail::Trail. If 'All Supported' parameter is
+      set to 'false', then this parameter becomes required.
+    Type: String
+  pSRAAlarmEmail: 
+    Description: Email address for receiving SRA alarms
+    AllowedPattern: '^(\D)+(\w)*((\.(\w)+)?)+@(\D)+(\w)*((\.(\D)+(\w)*)+)?(\.)[a-z]{2,}$'
+    Type: String
+  pCreateAWSControlTowerExecutionRole: 
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: Indicates whether the AWS Control Tower Execution role should be created.
+    Type: String
+  pDeployConfigManagementSolution:
+    AllowedValues: ['Yes']
+    Default: 'Yes'
+    Description: Deploy the AWS Config Management solution. Note, if solution was previously deployed, choose 'Already Deployed'.
+    Type: String
+  pDeployGuardDutySolution:
+    AllowedValues: ['Yes', 'No']
+    Default: 'Yes'
+    Description: Deploy the GuardDuty solution
+    Type: String
+  pDeploySecurityHubSolution:
+    AllowedValues: ['Yes', 'No']
+    Default: 'Yes'
+    Description: Deploy the Security Hub solution
+    Type: String
+  # pEnableNISTStandard:
+  #   AllowedValues: ['true', 'false']
+  #   Default: 'false'
+  #   Description: Indicates whether to enable the National Institute of Standards and Technology (NIST) SP 800-53 Rev. 5.
+  #   Type: String
+  # pNISTStandardVersion:
+  #   AllowedValues: [5.0.0]
+  #   Default: 5.0.0
+  #   Description: NIST Standard Version
+  #   Type: String
+  pCodeBuildLogGroupRetention:
+    AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+    Default: 400
+    Description: Specifies the number of days you want to retain log events
+    Type: String
+  pCodeBuildLogGroupKmsKey:
+    AllowedPattern: ^$|^arn:(aws[a-zA-Z-]*){1}:kms:[a-z0-9-]+:\d{12}:key\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$
+    ConstraintDescription: 'Key ARN example:  arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab'
+    Description:
+      (Optional) KMS Key ARN to use for encrypting the CodeBuild logs data. If empty, encryption is enabled with CloudWatch Logs managing the server-side
+      encryption keys.
+    Type: String
+
+Conditions:
+  cUsingKmsKey: !Not [!Equals [!Ref pLambdaLogGroupKmsKey, '']]
+  cCodeBuildCloudWatchLogsUseKmsKey: !Not [!Equals [!Ref pCodeBuildLogGroupKmsKey, '']]
+  cUseGraviton: !Or
+    - !Equals [!Ref 'AWS::Region', ap-northeast-1]
+    - !Equals [!Ref 'AWS::Region', ap-south-1]
+    - !Equals [!Ref 'AWS::Region', ap-southeast-1]
+    - !Equals [!Ref 'AWS::Region', ap-southeast-2]
+    - !Equals [!Ref 'AWS::Region', eu-central-1]
+    - !Equals [!Ref 'AWS::Region', eu-west-1]
+    - !Equals [!Ref 'AWS::Region', eu-west-2]
+    - !Equals [!Ref 'AWS::Region', us-east-1]
+    - !Equals [!Ref 'AWS::Region', us-east-2]
+    - !Equals [!Ref 'AWS::Region', us-west-2]
+
+
+Resources:
+  rSDCAStagingS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: S3 access logs intentionally not enabled
+      checkov:
+        skip:
+          - id: CKV_AWS_18
+            comment: S3 access logs intentionally not enabled
+    Properties:
+      BucketName: !Sub ${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      Tags:
+        - Key: !Ref pSDCASolutionTagKey
+          Value: !Ref pSDCASolutionName
+      VersioningConfiguration:
+        Status: Enabled
+
+  rSDCAStagingS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F16
+            reason: GetObject is restricted to AWS accounts within the AWS Organization
+    Properties:
+      Bucket: !Ref rSDCAStagingS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: SecureTransport
+            Effect: Deny
+            Action: 's3:*'
+            Principal: '*'
+            Resource:
+              - !Sub arn:${AWS::Partition}:s3:::${rSDCAStagingS3Bucket}
+              - !Sub arn:${AWS::Partition}:s3:::${rSDCAStagingS3Bucket}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: False
+
+
+  rCodeBuildProject:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W32
+            reason: CodeBuild project should specify an EncryptionKey value
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub '${pCodeBuildProjectName}'
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Description: "Codebuild project to get SRA code from github"
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: AWS_DEFAULT_REGION
+            Value: !Ref AWS::Region
+          - Name: AWS_ACCOUNT_ID
+            Value: !Ref "AWS::AccountId"
+        Image: "aws/codebuild/standard:5.0"
+        PrivilegedMode: true
+        Type: "LINUX_CONTAINER"
+      ServiceRole: !GetAtt rCodeBuildRole.Arn
+      TimeoutInMinutes: 120
+      Source:
+        Type: NO_SOURCE
+        BuildSpec: !Sub |
+          version: 0.2
+          phases:
+            pre_build:
+              commands:
+                - echo Build started on `date`...
+            build:
+              commands:
+                - echo Build started on `date` in ${AWS::Region} region
+                - echo Downloading SRA easy setup...
+                - curl -LJO https://raw.githubusercontent.com/aws-samples/aws-security-reference-architecture-examples/main/aws_sra_examples/easy_setup/templates/sra-easy-setup.yaml
+                - echo Listing current directory...
+                - ls
+                - echo Showing current caller identity...
+                - aws sts get-caller-identity
+                - echo Deploying SRA easy setup template...
+                - aws s3 cp ./sra-easy-setup.yaml s3://${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}/
+            post_build:
+              commands:
+                - echo Build completed on `date`
+
+  rCodeBuildProjectLogGroupSub:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${rCodeBuildProject}'
+      KmsKeyId: !If
+        - cCodeBuildCloudWatchLogsUseKmsKey
+        - !Ref pCodeBuildLogGroupKmsKey
+        - !Ref AWS::NoValue
+      RetentionInDays: !Ref pCodeBuildLogGroupRetention
+
+  rCodeBuildRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: Allow * in resource when required
+          - id: W28
+            reason: The role name is defined to identify automation resources
+    Properties:
+      RoleName: !Sub '${pCodeBuildRoleName}'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "logs-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
+        - PolicyName: "s3-sdca-bucket-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:GetBucketAcl
+                  - s3:GetBucketPolicy
+                  - s3:DeleteBucket
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:s3:::${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:${AWS::Partition}:s3:::${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}/*"
+        - PolicyName: "s3-create-bucket-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:PutBucketPolicy
+                  - s3:PutBucketTagging
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:GetEncryptionConfiguration
+                  - s3:PutEncryptionConfiguration
+                  - s3:PutBucketOwnershipControls
+                  - s3:CreateBucket
+                  - s3:PutBucketAcl
+                  - s3:PutBucketObjectLockConfiguration
+                  - s3:PutBucketVersioning
+                  - s3:SetBucketEncryption
+                  - s3:PutBucketEncryption
+                Resource: 
+                  - "arn:aws:s3:::*"
+
+  rStartCodeBuildProjectCustomResource:
+    DependsOn: rCodeBuildProject
+    Type: Custom::LambdaCustomResource
+    Version: '1.0'
+    Properties:
+      ServiceToken: !GetAtt rStartCodeBuildProjectLambdaFunction.Arn
+
+  rStartCodeBuildProjectLambdaFunction:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: Lambda role provides access to CloudWatch Logs
+          - id: W89
+            reason: Lambda does not need to communicate with VPC resources.
+          - id: W92
+            reason: Lambda does not need reserved concurrent executions.
+      checkov:
+        skip:
+          - id: CKV_AWS_115
+            comment: Lambda does not need reserved concurrent executions.
+          - id: CKV_AWS_116
+            comment: DLQ not needed, as Lambda function only triggered by CloudFormation events.
+          - id: CKV_AWS_117
+            comment: Lambda does not need to communicate with VPC resources.
+          - id: CKV_AWS_173
+            comment: Environment variables are not sensitive.
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref pCodeBuildProjectLambdaFunctionName
+      Description: Start SRA codebuild project
+      Architectures: !If
+        - cUseGraviton
+        - [arm64]
+        - !Ref AWS::NoValue
+      Handler: index.lambda_handler
+      Role: !GetAtt rStartCodeBuildProjectLambdaRole.Arn
+      Runtime: python3.9
+      Timeout: 900
+      Environment:
+        Variables:
+          LOG_LEVEL: !Ref pLambdaLogLevel
+          CODE_BUILD_PROJECT_NAME: !Ref pCodeBuildProjectName
+          SDCA_STAGING_S3_BUCKET_NAME: !Sub ${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}
+      Tags:
+        - Key: !Ref pSDCASolutionTagKey
+          Value: !Ref pSDCASolutionName
+      Code:
+        ZipFile: |
+          # type: ignore
+          """Custom Resource to start codebuild project.
+
+          Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+          SPDX-License-Identifier: MIT-0
+          """
+          import logging
+          import os
+
+          import boto3
+          import cfnresponse
+          import time
+          from botocore.exceptions import ClientError
+
+          LOGGER = logging.getLogger(__name__)
+          log_level: str = os.environ.get("LOG_LEVEL", "INFO")
+          LOGGER.setLevel(log_level)
+          CODE_BUILD_PROJECT_NAME: str = os.environ.get("CODE_BUILD_PROJECT_NAME")
+          SDCA_STAGING_S3_BUCKET_NAME: str = os.environ.get("SDCA_STAGING_S3_BUCKET_NAME")
+
+          def start_build():
+              """Start build job.
+
+              Returns:
+                  Response data for custom resource
+              """
+              management_account_session = boto3.Session()
+              codebuild_client = management_account_session.client("codebuild")
+              response = codebuild_client.start_build(projectName=CODE_BUILD_PROJECT_NAME)
+              LOGGER.info({"API_Call": "codebuild:StartBuild", "API_Response": response})
+              buildId = response["build"]["id"]
+              return wait_for_build([buildId], codebuild_client)
+              # return "IN_PROGRESS"
+
+
+          def wait_for_build(BuildId, client):
+              buildWaitStatus = "FAILURE_WAIT_TIMEOUT"
+              counter = 0
+              while counter < 30:
+                  time.sleep(10)
+                  counter = counter + 1
+                  buildStatus = get_build_status(BuildId, client)
+                  if buildStatus == "SUCCEEDED":
+                      buildWaitStatus = "SUCCESS"
+                      break
+                  elif buildStatus == "FAILED" or buildStatus == "FAULT" or buildStatus == "STOPPED" or buildStatus == "TIMED_OUT":
+                      buildWaitStatus = "BUILD " + buildStatus + " (check codebuild project cloudwatch log group for details)"
+                      break
+              return buildWaitStatus
+
+
+          def get_build_status(buildId, client):
+              build = client.batch_get_builds(ids=buildId)
+              return build["builds"][0]["buildStatus"]
+
+
+          def create_event(event, context):
+              try:
+                  data = {"data": start_build()}
+                  if data["data"] == "SUCCESS":
+                      cfnresponse.send(event, context, cfnresponse.SUCCESS, data, "SDCACustomResourcePhysicalID")
+                  else:
+                      reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name} and CloudFormation Events'"
+                      cfnresponse.send(event, context, cfnresponse.FAILED, data, "SDCACustomResourcePhysicalID")
+              except Exception:
+                  LOGGER.exception("Unexpected!")
+                  reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name}'"
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {}, "SDCACustomResourcePhysicalID", reason=reason)
+              return "SDCACustomResourcePhysicalID"
+
+
+          def delete_event(event, context):
+              s3_client = boto3.resource("s3")
+              staging_bucket = s3_client.Bucket(SDCA_STAGING_S3_BUCKET_NAME)
+              try:
+                  bucket_versioning = staging_bucket.Versioning()
+                  if bucket_versioning.status == "Enabled":
+                      LOGGER.info("versioning enabled; deleting object versions")
+                      delete_version_response = staging_bucket.object_versions.delete()
+                      LOGGER.info("see next message for delete response")
+                      LOGGER.info(delete_version_response)
+                      LOGGER.info("suspending versioning...")
+                      bucket_versioning.suspend()
+                  LOGGER.info("deleting objects")
+                  delete_object_response = staging_bucket.objects.all().delete()
+                  LOGGER.info("see next message for delete object response")
+                  LOGGER.info(delete_object_response)
+              except ClientError as e:
+                  LOGGER.info(f"Delete objects error: {e}")
+                  reason = f"See the details in CloudWatch Log Stream: '{context.log_group_name}'"
+                  cfnresponse.send(event, context, cfnresponse.FAILED, {}, "SDCACustomResourcePhysicalID", reason=reason)
+              staging_bucket.delete()
+              cfnresponse.send(event, context, cfnresponse.SUCCESS, {"delete_operation": f"succeeded deleting {SDCA_STAGING_S3_BUCKET_NAME}"}, "SDCACustomResourcePhysicalID")
+
+
+          def lambda_handler(event, context):
+              LOGGER.info(event)
+              if event["RequestType"] == "Create":
+                  LOGGER.info("CREATE EVENT!!")
+                  create_event(event, context)
+              if event["RequestType"] == "Update":
+                  LOGGER.info("UPDATE EVENT!!")
+
+              if event["RequestType"] == "Delete":
+                  LOGGER.info("DELETE EVENT!!")
+                  delete_event(event, context)
+  
+  rStartCodeBuildProjectLambdaLogGroup:
+    DeletionPolicy: Retain
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${rStartCodeBuildProjectLambdaFunction}
+      KmsKeyId: !If
+        - cUsingKmsKey
+        - !Ref pLambdaLogGroupKmsKey
+        - !Ref AWS::NoValue
+      RetentionInDays: !Ref pLambdaLogGroupRetention
+
+  rStartCodeBuildProjectLambdaRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: The role name is defined to identify automation resources
+    Properties:
+      RoleName: !Ref pCodeBuildProjectLambdaRoleName
+      Description: !Sub Role for '${pCodeBuildProjectLambdaRoleName}' Lambda function
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Tags:
+        - Key: !Ref pSDCASolutionTagKey
+          Value: !Ref pSDCASolutionName
+      Policies:
+        - PolicyName: codebuild-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: codebuildStartBuild
+                Effect: Allow
+                Action: 
+                  - codebuild:StartBuild
+                  - codebuild:BatchGetBuilds
+                Resource: !GetAtt rCodeBuildProject.Arn
+        - PolicyName: CloudWatchLogGroup-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: CloudWatchLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${pCodeBuildProjectLambdaFunctionName}:log-stream:*
+        - PolicyName: "s3-staging-bucket-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:GetBucketAcl
+                  - s3:GetBucketPolicy
+                  - s3:GetObjectAcl
+                  - s3:PutObjectAcl
+                  - s3:DeleteBucket
+                  - s3:DeleteObject
+                  - s3:DeleteObjectVersion
+                  - s3:GetBucketVersioning
+                  - s3:DeleteBucketPolicy
+                  - s3:ListBucketVersions
+                  - s3:PutBucketVersioning
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:s3:::${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}"
+                  - !Sub "arn:${AWS::Partition}:s3:::${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}/*"
+        - PolicyName: "lambda-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:DeleteFunction
+                  - lambda:InvokeFunction
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:sra*"
+        - PolicyName: "cloudformation-stack-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/sra*"
+        - PolicyName: "IAM-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:DeleteRole
+                  - iam:DeleteRolePolicy
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/sra*"
+
+  rSRAEasySetupStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: rStartCodeBuildProjectCustomResource
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      TemplateURL: !Sub https://${pSDCAStagingS3BucketNamePrefix}-${AWS::AccountId}-${AWS::Region}.s3.${AWS::Region}.amazonaws.com/sra-easy-setup.yaml
+      Parameters:
+        pAllSupported: !Ref pAllSupported
+        pAutoEnableS3Logs: !Ref pAutoEnableS3Logs
+        pCISStandardVersion: !Ref pCISStandardVersion
+        pComplianceFrequency: !Ref pComplianceFrequency
+        pCreateAWSControlTowerExecutionRole: !Ref pCreateAWSControlTowerExecutionRole
+        pCreateLambdaLogGroup: !Ref pCreateLambdaLogGroup
+        pDeployConfigManagementSolution: !Ref pDeployConfigManagementSolution
+        pDeployGuardDutySolution: !Ref pDeployGuardDutySolution
+        pDeploySecurityHubSolution: !Ref pDeploySecurityHubSolution
+        pDisableGuardDuty: !Ref pDisableGuardDuty
+        pDisableSecurityHub: !Ref pDisableSecurityHub
+        pEnableCISStandard: !Ref pEnableCISStandard
+        pEnablePCIStandard: !Ref pEnablePCIStandard
+        pEnableSecurityBestPracticesStandard: !Ref pEnableSecurityBestPracticesStandard
+        pFrequency: !Ref pFrequency
+        pGuardDutyFindingPublishingFrequency: !Ref pGuardDutyFindingPublishingFrequency
+        pGuardDutyOrgDeliveryBucketPrefix: !Ref pGuardDutyOrgDeliveryBucketPrefix
+        pGuardDutyOrgDeliveryKeyAlias: !Ref pGuardDutyOrgDeliveryKeyAlias
+        pIncludeGlobalResourceTypes: !Ref pIncludeGlobalResourceTypes
+        pLambdaLogGroupRetention: !Ref pLambdaLogGroupRetention
+        pLambdaLogLevel: !Ref pLambdaLogLevel
+        pRegionLinkingMode: !Ref pRegionLinkingMode
+        pSRAAlarmEmail: !Ref pSRAAlarmEmail
+        # pEnableNISTStandard: !Ref pEnableNISTStandard
+        # pNISTStandardVersion: !Ref pNISTStandardVersion
+        pKmsKeyArn: !Ref pKmsKeyArn
+        pResourceTypes: !Ref pResourceTypes
