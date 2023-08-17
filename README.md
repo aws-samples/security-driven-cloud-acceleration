@@ -22,6 +22,7 @@ The following AWS services and best practices are the primary focus of the SDCA 
 
 The following services may used in the provisioning and usage of SDCA, but are not primary focus of the program. 
 * AWS Config (for Conformance Packages)
+* AWS CloudTrail (for logging and GuardDuty threat detection analysis)
 * AWS Control Tower (optional)
 * AWS Security Reference Architecture (SRA)
 * AWS CloudFormations and/or HashiCorp Terraform IaC formats
