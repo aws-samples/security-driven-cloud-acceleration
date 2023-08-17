@@ -5,8 +5,7 @@ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-
 - [Overview of the SDCA Deployment Process](#overview-of-the-sdca-deployment-process)
   - [IMPORTANT: Enable Trusted Access with AWS Organizations for StackSets](#important-enable-trusted-access-with-aws-organizations-for-stacksets)
 - [CloudFormation Implementation Instructions](#cloudformation-implementation-instructions)
-  - [I. Download the Easy Setup CloudFormation Template](#i-download-the-easy-setup-cloudformation-template)
-    - [Example Download Command\<!-- omit in toc](#example-download-command---omit-in-toc)
+  - [I. Download the SDCA CloudFormation Template](#i-download-the-sdca-cloudformation-template)
   - [II. (Option A) Deployment using the AWS Console](#ii-option-a-deployment-using-the-aws-console)
   - [II. (Option B) Deployment using the AWS CLI](#ii-option-b-deployment-using-the-aws-cli)
   - [CloudFormation AWS SDCA Removal Instructions](#cloudformation-aws-sdca-removal-instructions)
@@ -32,14 +31,14 @@ For the this deployment to work, you must enabled trusted access with AWS Organi
 
 ### CloudFormation Implementation Instructions
 
-- The process to implement the easy setup begins with downloading the `sdca-setup.yaml` template from the SDCA code repository.  Then, follow the instructions for deployment via the AWS console.
+- The process to implement security services as a part of the SDCA begins with downloading the `sdca-setup.yaml` cloudformation template from the SDCA code repository.  Then, follow the instructions for deployment via the AWS console.
 - IMPORTANT: [Trusted Access with AWS Organizations for StackSets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-enable-trusted-access.html) must be manually enabled first.
 
-#### I. Download the Easy Setup CloudFormation Template
+#### I. Download the SDCA CloudFormation Template
 
 Download the `sdca-setup.yaml` template by either navigating to it in the AWS SDCA code repository, or by using the example download commands in this section.
 
-##### Example Download Command<!-- omit in toc
+##### Example Download Command<!-- omit in toc -->
 
 ```bash
 curl -LJO https://raw.githubusercontent.com/security-driven-cloud-acceleration/main/CloudFormation/templates/sdca-setup.yaml
