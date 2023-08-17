@@ -107,7 +107,7 @@ From within the management account:
 
 See [AWS SRA Easy Setup Architecture Details](https://github.com/aws-samples/aws-security-reference-architecture-examples/tree/main/aws_sra_examples/easy_setup#easy-setup-architecture-details) for more information.
 
-![Easy Setup](https://raw.githubusercontent.com/aws-samples/aws-security-reference-architecture-examples/main/aws_sra_examples/easy_setup/assets/sdca-setup.png)
+![Easy Setup](https://raw.githubusercontent.com/aws-samples/aws-security-reference-architecture-examples/main/aws_sra_examples/easy_setup/assets/SRA-Easy-Setup.png)
 
 ### Common Prerequisites Architecture Details
 
