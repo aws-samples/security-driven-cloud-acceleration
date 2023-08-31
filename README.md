@@ -38,12 +38,12 @@ The following AWS services are NOT enabled by the SDCA sample code, but are incl
 The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
 
 ## How It Works - CloudFormations Version
-1/ Download the SDCA templates from GitHub
-2/ Use CloudFormations in AWS Console
-3/ It automatically creates an Amazon S3 staging bucket.
-4/ It automtiacally downloads the latest Security Reference Architecture code from the GitHub repo. 
-5/ It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
-6/ It should complete in approximately 20 minutes. 
+1. Download the SDCA templates from GitHub
+2. Use CloudFormations in AWS Console
+3. It automatically creates an Amazon S3 staging bucket.
+4. It automtiacally downloads the latest Security Reference Architecture code from the GitHub repo. 
+5. It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
+6. It should complete in approximately 20 minutes. 
 
 ## Measuring Results
 * Increased customer security posture through AWS Trusted Advisor scores. 
