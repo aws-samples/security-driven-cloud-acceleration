@@ -17,11 +17,27 @@ Metadata:
           - pSDCASolutionTagKey
           - pSDCASolutionName
           - pSDCAStagingS3BucketNamePrefix
+          - pRepoURL
+          - pRepoBranch
+      - Label:
+          default: Landing Zone
+        Parameters:
+          - pControlTower
+          - pGovernedRegions
+          - pSecurityAccountId
+          - pLogArchiveAccountId
       - Label:
           default: Common Properties
         Parameters:
           - pSRAAlarmEmail
           - pCreateAWSControlTowerExecutionRole
+      - Label:
+          default: Landing Zone
+        Parameters:
+          - pControlTower
+          - pGovernedRegions
+          - pSecurityAccountId
+          - pLogArchiveAccountId
       - Label:
           default: CodeBuild Properties
         Parameters:
@@ -64,8 +80,8 @@ Metadata:
           - pCISStandardVersion
           - pEnablePCIStandard
           - pEnableSecurityBestPracticesStandard
-          # - pEnableNISTStandard
-          # - pNISTStandardVersion
+          - pEnableNISTStandard
+          - pNISTStandardVersion
           - pRegionLinkingMode
       - Label:
           default: General Lambda Function and EventBridge Properties
@@ -77,6 +93,18 @@ Metadata:
           - pLambdaLogLevel
 
     ParameterLabels:
+      pControlTower:
+        default: AWS Control Tower landing zone deployed/in-use
+      pGovernedRegions:
+        default: AWS regions (comma separated) if not using AWS Control Tower (leave set to ct-regions for AWS Control Tower environments)
+      pSecurityAccountId:
+        default: Security Tooling Account ID
+      pLogArchiveAccountId:
+        default: Log Archive Account ID
+      pRepoURL:
+        default: The AWS SRA public code repository HTTPS URL
+      pRepoBranch:
+        default: The AWS SRA public code repository branch name
       pSDCAStagingS3BucketNamePrefix:
         default: SDCA Staging S3 Bucket Name Prefix
       pSDCASolutionName:
@@ -135,16 +163,51 @@ Metadata:
         default: Create AWS Control Tower Execution Role
       pResourceTypes:
         default: (Optional) Resource Types
-      # pEnableNISTStandard:
-      #   default: Enable NIST Standard
-      # pNISTStandardVersion:
-      #   default: NIST Standard Version
+      pEnableNISTStandard:
+        default: Enable NIST Standard
+      pNISTStandardVersion:
+        default: NIST Standard Version
       pCodeBuildLogGroupRetention:
         default: CodeBuild Log Group Retention
       pCodeBuildLogGroupKmsKey:
         default: (Optional) CodeBuild Logs KMS Key
 
 Parameters:
+  pRepoURL:
+    Default: https://github.com/aws-samples/aws-security-reference-architecture-examples.git
+    Description:
+      SRA Code Library Repository URL
+    Type: String
+  pRepoBranch:
+    Default: main
+    Description:
+      SRA Code Library Repository branch name
+    Type: String
+  pControlTower:
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description:
+      Indicates whether AWS Control Tower is deployed and being used for this AWS environment.
+    Type: String
+  pGovernedRegions:
+    AllowedPattern: '^(ct-regions)|((\b(?<!@)(af-south-1|ap-east-1|ap-northeast-1|ap-northeast-2|ap-northeast-3|ap-south-1|ap-south-2|ap-southeast-1|ap-southeast-2|ap-southeast-3|ap-southeast-4|ca-central-1|cn-north-1|cn-northwest-1|eu-central-1|eu-central-2|eu-north-1|eu-south-1|eu-south-2|eu-west-1|eu-west-2|eu-west-3|me-central-1|me-south-1|sa-east-1|us-east-1|us-east-2|us-gov-east-1|us-gov-west-1|us-west-1|us-west-2)\b,{0,1})*)$'
+    ConstraintDescription:
+      For AWS Control Tower, set to ct-regions (default).  If not using AWS Control Tower, specify comma separated list of regions (e.g. us-west-2,us-east-1,ap-south-1) in lower case.
+    Default: ct-regions
+    Description: AWS regions (comma separated) if not using AWS Control Tower (leave set to ct-regions for AWS Control Tower environments)
+    Type: String
+  pSecurityAccountId:
+    AllowedPattern: '^\d{12}$'
+    Default: 111111111111
+    ConstraintDescription: Must be 12 digits.
+    Description: AWS Account ID of the Security Tooling account (ignored for AWS Control Tower environments).
+    Type: String
+  pLogArchiveAccountId:
+    AllowedPattern: '^\d{12}$'
+    Default: 222222222222
+    ConstraintDescription: Must be 12 digits.
+    Description: AWS Account ID of the Log Archive account (ignored for AWS Control Tower environments).
+    Type: String
   pSDCAStagingS3BucketNamePrefix:
     AllowedValues: [sdca-staging]
     Default: sdca-staging
@@ -212,6 +275,13 @@ Parameters:
     Default: 'No'
     Description:
       Indicates whether a CloudWatch Log Group should be explicitly created for the Lambda function, to allow for setting a Log Retention and/or KMS
+      Key for encryption.
+    Type: String
+  pCreateCodeBuildLogGroup: 
+    AllowedValues: ['Yes', 'No']
+    Default: 'No'
+    Description:
+      Indicates whether a CloudWatch Log Group should be explicitly created for the Codebuild project, to allow for setting a Log Retention and/or KMS
       Key for encryption.
     Type: String
   pDisableGuardDuty:  
@@ -316,7 +386,7 @@ Parameters:
     Description: Indicates whether the AWS Control Tower Execution role should be created.
     Type: String
   pDeployConfigManagementSolution:
-    AllowedValues: ['Yes']
+    AllowedValues: ['Yes', 'No', 'Already Deployed']
     Default: 'Yes'
     Description: Deploy the AWS Config Management solution. Note, if solution was previously deployed, choose 'Already Deployed'.
     Type: String
@@ -330,16 +400,16 @@ Parameters:
     Default: 'Yes'
     Description: Deploy the Security Hub solution
     Type: String
-  # pEnableNISTStandard:
-  #   AllowedValues: ['true', 'false']
-  #   Default: 'false'
-  #   Description: Indicates whether to enable the National Institute of Standards and Technology (NIST) SP 800-53 Rev. 5.
-  #   Type: String
-  # pNISTStandardVersion:
-  #   AllowedValues: [5.0.0]
-  #   Default: 5.0.0
-  #   Description: NIST Standard Version
-  #   Type: String
+  pEnableNISTStandard:
+    AllowedValues: ['true', 'false']
+    Default: 'false'
+    Description: Indicates whether to enable the National Institute of Standards and Technology (NIST) SP 800-53 Rev. 5.
+    Type: String
+  pNISTStandardVersion:
+    AllowedValues: [5.0.0]
+    Default: 5.0.0
+    Description: NIST Standard Version
+    Type: String
   pCodeBuildLogGroupRetention:
     AllowedValues: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
     Default: 400
@@ -367,7 +437,10 @@ Conditions:
     - !Equals [!Ref 'AWS::Region', us-east-1]
     - !Equals [!Ref 'AWS::Region', us-east-2]
     - !Equals [!Ref 'AWS::Region', us-west-2]
-
+  cCreateCodeBuildLogGroup: !Equals [!Ref pCreateCodeBuildLogGroup, 'Yes']
+  cDeployConfigMgmt: !And
+    - !Equals [!Ref pControlTower, 'true']
+    - !Equals [!Ref pDeployConfigManagementSolution, 'Yes']
 
 Resources:
   rSDCAStagingS3Bucket:
@@ -475,6 +548,7 @@ Resources:
                 - echo Build completed on `date`
 
   rCodeBuildProjectLogGroupSub:
+    Condition: cCreateCodeBuildLogGroup
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
@@ -711,6 +785,7 @@ Resources:
                   delete_event(event, context)
   
   rStartCodeBuildProjectLambdaLogGroup:
+    Condition: cCreateCodeBuildLogGroup
     DeletionPolicy: Retain
     Type: AWS::Logs::LogGroup
     UpdateReplacePolicy: Retain
@@ -833,7 +908,7 @@ Resources:
         pComplianceFrequency: !Ref pComplianceFrequency
         pCreateAWSControlTowerExecutionRole: !Ref pCreateAWSControlTowerExecutionRole
         pCreateLambdaLogGroup: !Ref pCreateLambdaLogGroup
-        pDeployConfigManagementSolution: !Ref pDeployConfigManagementSolution
+        pDeployConfigManagementSolution: !If [cDeployConfigMgmt,  'Yes', 'No']
         pDeployGuardDutySolution: !Ref pDeployGuardDutySolution
         pDeploySecurityHubSolution: !Ref pDeploySecurityHubSolution
         pDisableGuardDuty: !Ref pDisableGuardDuty
@@ -850,7 +925,13 @@ Resources:
         pLambdaLogLevel: !Ref pLambdaLogLevel
         pRegionLinkingMode: !Ref pRegionLinkingMode
         pSRAAlarmEmail: !Ref pSRAAlarmEmail
-        # pEnableNISTStandard: !Ref pEnableNISTStandard
-        # pNISTStandardVersion: !Ref pNISTStandardVersion
+        pEnableNISTStandard: !Ref pEnableNISTStandard
+        pNISTStandardVersion: !Ref pNISTStandardVersion
         pKmsKeyArn: !Ref pKmsKeyArn
         pResourceTypes: !Ref pResourceTypes
+        pRepoURL: !Ref pRepoURL
+        pRepoBranch: !Ref pRepoBranch
+        pControlTower: !Ref pControlTower
+        pGovernedRegions: !Ref pGovernedRegions
+        pSecurityAccountId: !Ref pSecurityAccountId
+        pLogArchiveAccountId: !Ref pLogArchiveAccountId
