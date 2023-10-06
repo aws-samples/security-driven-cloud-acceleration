@@ -440,7 +440,9 @@ Conditions:
   cCreateCodeBuildLogGroup: !Equals [!Ref pCreateCodeBuildLogGroup, 'Yes']
   cDeployConfigMgmt: !And
     - !Equals [!Ref pControlTower, 'true']
-    - !Equals [!Ref pDeployConfigManagementSolution, 'Yes']
+    - !Or
+      - !Equals [!Ref pDeployConfigManagementSolution, 'Already Deployed']
+      - !Equals [!Ref pDeployConfigManagementSolution, 'Yes']
 
 Resources:
   rSDCAStagingS3Bucket:
@@ -908,7 +910,7 @@ Resources:
         pComplianceFrequency: !Ref pComplianceFrequency
         pCreateAWSControlTowerExecutionRole: !Ref pCreateAWSControlTowerExecutionRole
         pCreateLambdaLogGroup: !Ref pCreateLambdaLogGroup
-        pDeployConfigManagementSolution: !If [cDeployConfigMgmt,  'Yes', 'No']
+        pDeployConfigManagementSolution: !If [cDeployConfigMgmt,  'Yes', 'Already Deployed']
         pDeployGuardDutySolution: !Ref pDeployGuardDutySolution
         pDeploySecurityHubSolution: !Ref pDeploySecurityHubSolution
         pDisableGuardDuty: !Ref pDisableGuardDuty
