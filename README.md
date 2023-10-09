@@ -18,7 +18,7 @@ The following AWS services and best practices are the primary focus of the SDCA 
 * AWS Security Hub
 * Amazon GuardDuty (including protections for S3, EKS, RDS, Malware, and Lambda) 
 * Amazon Key Management Service (KMS)
-* AWS Shield Advanced (coming soon)
+* AWS Shield Advanced (coming soon in GA version)
 
 The following services and solutions may used in the provisioning and usage of SDCA, but are not primary focus of the program. 
 * AWS Config (for Conformance Packages)
@@ -38,11 +38,12 @@ The following AWS services are NOT enabled by the SDCA sample code, but are incl
 The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
 
 ## How It Works - CloudFormations Version
-1/ Download the SDCA templates from GitHub
-2/ Use CloudFormations in AWS Console
-3/ It automatically creates an Amazon S3 staging bucket.
-4/ It automtiacally downloads the latest Security Reference Architecture code from the GitHub repo. 
-5/ It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
+1. Download the SDCA templates from GitHub
+2. Use CloudFormations in AWS Console
+3. It automatically creates an Amazon S3 staging bucket.
+4. It automtiacally downloads the latest Security Reference Architecture code from the GitHub repo. 
+5. It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
+6. It should complete in approximately 20 minutes. 
 
 ## Measuring Results
 * Increased customer security posture through AWS Trusted Advisor scores. 
@@ -50,7 +51,7 @@ The IaC template is built upon the Security Reference Architecture (SRA), and co
 * Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through security automation.
    
 ## Availability & Further Information
-This is scheduled for release as a POC in Q3 2023 as a combination of the IaC templates, a customer-facing first call deck (FCD), and blogs in the AWS Security Blog channel and co-promotion in the AWS blog channels for workloads such as Containers, AI/ML, Storage, and more. AWS Partners will get a preview to assist with early joint adoption and feedback. 
+The POC was released on August 17th, 2023. It includes 75% of the functionality intended as it is missing the IaC templates for AWS Shield Advanced. These will be available in the General Availability (GA) release at the end of Q3 2023. 
 
 For further information and to stay informed of release, contact Christopher Rae (xrae@amazon.com), Principal Worldwide Security GTM Specialist at Amazon Web Services. 
 
