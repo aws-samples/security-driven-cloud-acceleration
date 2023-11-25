@@ -51,7 +51,7 @@ The IaC template is built upon the Security Reference Architecture (SRA), and co
 * Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through security automation.
    
 ## Availability & Further Information
-The POC was released on August 17th, 2023. It includes 87.5% of the functionality intended as it is missing the CloudFormation templates for AWS Shield Advanced. These will be available in the General Availability (GA) release at the end of Q3 2023. 
+The POC was released on August 17th, 2023. It includes 87.5% of the functionality intended as it is missing the CloudFormation templates for AWS Shield Advanced. These will be available in the General Availability (GA) release at the end of Q3 2023. Now also includes option to use AWS Control Tower or not, providing maximum flexibility on deploying to a single wirkload or across an entire organization.
 
 For further information and to stay informed of release, contact Christopher Rae (xrae@amazon.com), Principal Worldwide Security GTM Specialist at Amazon Web Services. 
 
