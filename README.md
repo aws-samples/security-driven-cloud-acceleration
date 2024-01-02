@@ -1,63 +1,70 @@
 # Security-Driven Cloud Acceleration (SDCA) Templates
 
-## What Is It? 
-Security-Driven Cloud Acceleration (SDCA) is a set of infrastructure-as-code templates that embeds core AWS security best practices earlier in the customer journey into any workload, program, and industry solution. 
+## What is Security-Driven Cloud Acceleration (SDCA)?
+Security-Driven Cloud Acceleration (SDCA) is a security solution built on [infrastructure-as-code (IaC)](https://aws.amazon.com/what-is/iac/) templates that embeds core [Amazon Web Services (AWS) security best practices](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all) earlier in the customer journey into any workload, program, and industry solution. 
 
 ![SDCA Reference Diagram](https://github.com/aws-samples/security-driven-cloud-acceleration/assets/5162627/c6157010-a63b-4cb4-ad9e-b86b844ba3c3)
 
-## What Are We Doing?
-The goal of SDCA is to help reduce friction for customers to “shift-left and automate” with security earlier in their journey. SDCA simplifies increasing security posture by applying the minimum AWS security recommendations to achieve a defense-in-depth strategy across any workload, program or industry solution. SDCA can be used by customers and partners to create a secure landing zone during migrations or be secure foundation for cloud native development. By making it easier, faster, and less expensive to increase security posture while embedding this with core workload services, SDCA will further increase customer confidence that AWS is the most secure cloud for innovation. 
+## What are the benefits of SDCA?
+The goal of SDCA is to help reduce friction for customers to “shift-left and automate” with strong security earlier in their journey. SDCA simplifies improving security posture by applying the minimum AWS security to accelerate a [secure-by-design](https://www.cisa.gov/securebydesign), [defense-in-depth strategy](https://www.csoonline.com/article/573221/defense-in-depth-explained-layering-tools-and-processes-for-better-security.html) across any workload, program or industry solution. SDCA can be used by customers and partners to create a secure landing zone during migrations and/or be secure foundation for cloud native development. By making it easier, faster, and less expensive to automate security posture improvements while embedding this with core workload services, SDCA will further increase customer confidence that AWS is the most secure cloud for innovation. 
 
-## Who Benefits From This?
-SDCA is an embeddable set of free IaC templates to be used by builders, infrastructure teams, security teams, CISOs and partners to increase security posture, simplify and accelerate the implementation of core AWS security services and automate their best practices, helping customers save time, money, and frustration. They are built upon the AWS Security Reference Architecture (SRA), a stable, proven and comprehensive library of AWS security best practices, but simplify the usage to just the minimum recommended security services for any workload, any account, and any customer. By leveraging infrastructure as code, customers benefit from increased observability into their security posture and policies, simplifying audits and compliance.
+## Who is this designed for? 
+SDCA is an embeddable set of free-to-use IaC templates for CISOs, security teams, software developers, infrastructure teams, and partners to increase security posture, simplify and accelerate the implementation of core AWS security services and automate their best practices, helping customers save time, money, and frustration. The templates are built upon the continuously improving [AWS Security Reference Architecture (SRA)](https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html), a stable, proven and comprehensive library of AWS security best practices. They simplify the usage to just the minimum recommended security services for any workload, any account, and any customer. By leveraging infrastructure as code, customers benefit from faster time-to-market, time-to-value, automating security policy-as-code into their devops lifecycles, increasing governance and observability into their security posture and policies, simplifying audits and compliance, and reducing costs, time, and risk associated to security events. 
 
-## How It Works
-The primary deliverable of SDCA is a set of infrastructure-as-code (IaC) templates available in both AWS CloudFormations and HashiCorp Terraform formats, the two most popular IaC formats for automating security policy as code. These templates will be available for free on the AWS Samples GitHub account. These templates can be embedded into any other CloudFormations or Terraform offerings to allow customers to enable security best practices with workloads. Estimated time to complete ranges from 15-45 minutes depending on workload and configuration complexity. Once implemented, customers can automate Git pulls of the latest code updates and security best practices. 
+## How does it work?
+The primary deliverable of SDCA is a set of infrastructure-as-code (IaC) templates available in both [AWS CloudFormation](https://aws.amazon.com/cloudformation/) and [HashiCorp Terraform](https://www.hashicorp.com/products/terraform) formats, the two most popular formats for automating security policy as code. These templates are available for free on the AWS Samples GitHub account. These templates can be embedded into any other CloudFormations or Terraform offerings to allow customers to consistently automate security best practices with workloads. Estimated time to complete ranges from 15-45 minutes depending on workload and configuration complexity. Once implemented, customers can automate Git pulls of the latest code updates and security best practices of the AWS SRA. 
 
 The following AWS services and best practices are the primary focus of the SDCA program:
-* AWS Security Hub
-* Amazon GuardDuty (including protections for S3, EKS, RDS, Malware, and Lambda) 
-* Amazon Key Management Service (KMS)
-* AWS Shield Advanced (coming soon in GA version)
+* [AWS Security Hub](https://aws.amazon.com/security-hub/)
+* [Amazon GuardDuty](https://aws.amazon.com/guardduty/) (including protections for S3, EKS, RDS, Malware, and Lambda) 
+* [Amazon Key Management Service (KMS)](https://aws.amazon.com/kms/)
+* [AWS Shield Advanced](https://aws.amazon.com/shield/) (available in Terraform version today, coming soon for CloudFormation in GA version)
 
 The following services and solutions may used in the provisioning and usage of SDCA, but are not primary focus of the program. 
-* AWS Config (for Conformance Packages)
-* AWS CloudTrail (for logging and GuardDuty threat detection analysis)
-* AWS CodeBuild (for automated building of the SDCA stack and Security Reference Architecture code) 
-* AWS Control Tower (optional for customers who want to consistently apply SDCA to all or mutliple accounts in their organization)
-* AWS Lambda (for automated building of the SDCA stack and Security Reference Architecture code)
-* Amazon S3 (used to create a staging bucket and for configuring logs)
-* AWS Security Reference Architecture (SRA) (As the engine of security best practices)
-* AWS CloudFormations and/or HashiCorp Terraform IaC formats (the two most popular IaC formats)
+* [AWS Security Reference Architecture (SRA)](https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html) (as the engine of security best practices recommendations and configurations)
+* [AWS CloudFormation](https://aws.amazon.com/cloudformation/) and/or [HashiCorp Terraform](https://www.hashicorp.com/products/terraform) IaC formats (the two most popular IaC formats)
+* [AWS Config](https://aws.amazon.com/config/) (for Conformance Packages)
+* [AWS CloudTrail](https://aws.amazon.com/cloudtrail/)  (for logging and GuardDuty threat detection analysis)
+* [AWS CodeBuild](https://aws.amazon.com/codebuild/) (for automated building of the SDCA stack and Security Reference Architecture code) 
+* [AWS Control Tower](https://aws.amazon.com/controltower/) (optional for customers who want to consistently apply SDCA to all or mutliple accounts in their organization)
+* [AWS Lambda](https://aws.amazon.com/lambda/)  (for automated building of the SDCA stack and Security Reference Architecture code)
+* [Amazon S3](https://aws.amazon.com/s3/)  (used to create a staging bucket and for configuring logs)
 
-The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually. 
-* AWS Firewall Manager
-* AWS Web Application Firewall (WAF)
+The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually in AWS Console or CLI. 
+* [AWS Firewall Manager](https://aws.amazon.com/firewall-manager/)
+* [AWS Web Application Firewall (WAF)](https://aws.amazon.com/waf/)
 
-## Summary Of Design
-The IaC template is built upon the Security Reference Architecture (SRA), and consists of a modular bundle of five configuration files, one for each of the four core security services, plus one main file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which AWS Config Conformance Packs they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
+The following AWS services are strongly encouraged for use in parallel:
+* [AWS Trusted Advisor](https://aws.amazon.com/premiumsupport/technology/trusted-advisor/) 
 
-## How It Works - CloudFormations Version
+## Why focus on these four AWS Security services?
+To provide an effective defense-in-depth strategy, customers must employ multiple layers of security controls to help protect data and workloads. In the event that a security threat bypasses or compromises one layer of security, another layer of independent protection helps guard against potential threats, ensuring that at least two or more controls must fail before a system is compromised. This can deter or slow down a threat actor, buying time to isolate the threat and remediate vulnerabilities to minimize risk and damage. When used in conjunction with fine-grained least-privledge access policies with AWS Identity and Access Management (IAM), each of these core security services represent the minimum security recommendations from AWS Security across the [core security domains](https://aws.amazon.com/products/security/?nc=sn&loc=2) of Data Protection ([Amazon Key Management Service (KMS)](https://aws.amazon.com/kms/)), Network & Application Protection ([AWS Shield Advanced](https://aws.amazon.com/shield/)), Threat Detection & Incident Response ([Amazon GuardDuty](https://aws.amazon.com/guardduty/)), and Privacy & Governance ([AWS Security Hub](https://aws.amazon.com/security-hub/)). Additionally, when customers opt-in to enable AWS Shield Advanced, they get AWS WAF and AWS Firewall Manager included in the price, which provides additional defense-in-depth functionality, cost protections, and cost savings for the Network & Application Protection domain.
+
+## What is the summary of its design? 
+The IaC template is built upon the [AWS Security Reference Architecture (SRA)](https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html), and consists of a modular bundle of five configuration files, one for each of the four core security domain services, plus one main configuration file. In the main file, customers can configure high-level setting such as whether they want this to run on a single workload, account, or entire organization, what AWS region(s) they would like this to run in, and which [AWS Config Conformance Packs](https://docs.aws.amazon.com/config/latest/developerguide/conformance-packs.html) they would like to apply (such as CIS AWS Foundations, NIST 800-53 rev 5, HIPAA, FedRamp Moderate, and many more). 
+
+## How It Works - CloudFormation Version
 1. Download the SDCA templates from GitHub
-2. Use CloudFormations in AWS Console
-3. It automatically creates an Amazon S3 staging bucket.
+2. Use CloudFormation in AWS Console, CLI or API
+3. SDCA automatically creates an Amazon S3 staging bucket.
 4. It automatically downloads the latest Security Reference Architecture code from the GitHub repo. 
 5. It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
 6. It should complete in approximately 20 minutes.
 
-## Measuring Results
-* Increased customer security posture through AWS Trusted Advisor scores. 
-* Compression of migration timelines, account creation, service activation, and security best practices enablement. 
-* Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through security automation.
-
 ## Summary of Costs
-As with most other AWS solutions, customers only pay for what they use. To further make it easier for customers to adopt SDCA as a starting point for their security journey, there is no cost to use the CloudFormation or Terraform scripts. The AWS services enabled by default in the scripts offer free trials for 30 days, with the exception of AWS Shield Advanced has a different pricing model, and is therefore disabled by default until customers are ready to try it or commit. Customers should use the ![AWS Pricing Calculator](https://calculator.aws/#/) to estimate the costs for their individual workloads. 
+As with most other AWS solutions, customers only pay for what they use. To further make it easier for customers to adopt SDCA as a starting point for their security journey, there is no cost to use the CloudFormation or Terraform scripts. The AWS services enabled by default in the scripts offer free trials for 30 days, with the exception of AWS Shield Advanced has a different pricing model, and is therefore disabled by default until customers are ready to try it or commit. Additionally, ask your Account Manager about the "AWS Shields Up!" promotion which can help offset the cost and commitment of AWS Shield Advanced for up to 60 days. Customers should use the [AWS Pricing Calculator](https://calculator.aws/#/) to estimate the costs for their individual workloads prior to enablement. NOTE: AWS Shield Advanced comes with DDoS cost protection to safeguard against scaling charges resulting from DDoS-related usage spikes on protected [Amazon EC2](https://aws.amazon.com/ec2/), [AWS Elastic Load Balancer (ELB)](https://aws.amazon.com/elasticloadbalancing/), [Amazon CloudFront](https://aws.amazon.com/cloudfront/), [AWS Global Accelerator](https://aws.amazon.com/global-accelerator/), and [Amazon Route 53](https://aws.amazon.com/route53/) resources, which may offset other costs. If any of these protected resources scale up in response to a DDoS attack, you can request Shield Advanced service credits through your regular AWS Support channel.
+
+## When should SDCA be applied?
+To get the maximium benefits for SDCA, it should be applied as early as possible in the creation and provisioning of all accounts and workloads. Customers should strongly consider first performing a [threat modeling](https://aws.amazon.com/blogs/security/how-to-approach-threat-modeling/) exercise, baselining their current security posture with tools such as AWS Trusted Advisor, and then use SDCA templates as part of the design, architecture, and corrective actions steps of any "shift-left" and secure-by-design initiative. 
+
+## How should I measuring impact and results? 
+Customers can measure the impact of using Security-Driven Cloud Acceleration through a variety of metrics such as:
+* Increased customer security posture through measuring [AWS Trusted Advisor](https://aws.amazon.com/premiumsupport/technology/trusted-advisor/) scores and reduced [AWS Security Hub](https://aws.amazon.com/security-hub/) alert severity and volumes.
+* Reduction in time and costs associated to account and service provisioning, data and infrastructure protection, Mean Time To Detection (MTTD) and Mean Time To Remediation (MTTR) through cloud security automation.
+* AWS Shield Advanced comes with DDoS cost protection to safeguard against scaling charges resulting from DDoS-related usage spikes on protected [Amazon EC2](https://aws.amazon.com/ec2/), [AWS Elastic Load Balancer (ELB)](https://aws.amazon.com/elasticloadbalancing/), [Amazon CloudFront](https://aws.amazon.com/cloudfront/), [AWS Global Accelerator](https://aws.amazon.com/global-accelerator/), and [Amazon Route 53](https://aws.amazon.com/route53/) resources. 
+* Compression of migration timelines, account creation, service activation, development and testing cycles, and security best practices enablement through cloud security automation.
    
 ## Availability & Further Information
-The POC was released on August 17th, 2023. It includes 87.5% of the functionality intended as it is missing the CloudFormation templates for AWS Shield Advanced. These will be available in the General Availability (GA) release at the end of Q3 2023. Now also includes option to use AWS Control Tower or not, providing maximum flexibility on deploying to a single wirkload or across an entire organization.
+The POC was released on August 17th, 2023. It includes 87.5% of the functionality intended as it is missing the CloudFormation templates for automating AWS Shield Advanced. These will be available in the General Availability (GA) release at the end of January 2024, however if customers want to enable AWS Shield Advanced today they can still do so manually in AWS Console and AWS CLI. Now also includes option to use AWS Control Tower or not, providing maximum flexibility on deploying to a single wirkload or across an entire organization. Customers can begin testing with the current version today to get familiar with the process and to adapt the templates to their workloads and organizational needs. 
 
-For further information and to stay informed of release, contact Christopher Rae (xrae@amazon.com), Principal Worldwide Security GTM Specialist at Amazon Web Services. 
-
-
-
-
+For further information and to stay informed of general availability releases, contact Christopher Rae (xrae@amazon.com), Principal Worldwide Security GTM Specialist at Amazon Web Services. 
