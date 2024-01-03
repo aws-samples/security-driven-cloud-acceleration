@@ -1,7 +1,7 @@
 # Security-Driven Cloud Acceleration (SDCA) Templates
 
 ## What is Security-Driven Cloud Acceleration (SDCA)?
-Security-Driven Cloud Acceleration (SDCA) is a security solution built on [infrastructure-as-code (IaC)](https://aws.amazon.com/what-is/iac/) templates that embeds core [Amazon Web Services (AWS) security best practices](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all) earlier in the customer journey into any workload, program, and industry solution. 
+Security-Driven Cloud Acceleration (SDCA) is a security solution built on [infrastructure-as-code (IaC)](https://aws.amazon.com/what-is/iac/) templates that embeds core [Amazon Web Services (AWS) security](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all) earlier in the customer journey into any workload, program, and industry solution in alignment with the AWS Cloud Adoption Framework, AWS Well-Architected Framework, and AWS Security Best Practices.
 
 ![SDCA Reference Diagram](https://github.com/aws-samples/security-driven-cloud-acceleration/assets/5162627/c6157010-a63b-4cb4-ad9e-b86b844ba3c3)
 
