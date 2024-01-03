@@ -1,4 +1,4 @@
-# Security-Driven Cloud Acceleration (SDCA) Templates
+# Security-Driven Cloud Acceleration (SDCA) 
 
 ## What is Security-Driven Cloud Acceleration (SDCA)?
 Security-Driven Cloud Acceleration (SDCA) is a security solution built on [infrastructure-as-code (IaC)](https://aws.amazon.com/what-is/iac/) templates that embeds core [Amazon Web Services (AWS) security](https://aws.amazon.com/architecture/security-identity-compliance/?cards-all.sort-by=item.additionalFields.sortDate&cards-all.sort-order=desc&awsf.content-type=*all&awsf.methodology=*all) earlier in the customer journey into any workload, program, and industry solution in alignment with the AWS Cloud Adoption Framework, AWS Well-Architected Framework, and AWS Security Best Practices.
@@ -46,7 +46,7 @@ The IaC template is built upon the [AWS Security Reference Architecture (SRA)](h
 * [How to configure and use the SDCA AWS CloudFormation templates in AWS Console and AWS CLI](/CloudFormation/README.md)
 
 ### Terraform version
-Coming soon!
+Detailed instructions coming soon!
 
 ## Costs
 As with most other AWS solutions, customers only pay for what they use. To further make it easier for customers to adopt SDCA as a starting point for their security journey, there is no cost to use the CloudFormation or Terraform scripts. The AWS services enabled by default in the scripts offer free tiers and trials for 30 days, with the exception of AWS Shield Advanced has a different pricing model, and is therefore disabled by default until customers are ready to try it or commit. Additionally, ask your Account Manager about the "AWS Shields Up!" promotion which can help offset the cost and commitment of AWS Shield Advanced for up to 60 days. Customers should use the [AWS Pricing Calculator](https://calculator.aws/#/) to estimate the costs for their individual workloads prior to enablement. NOTE: AWS Shield Advanced comes with DDoS cost protection to safeguard against scaling charges resulting from DDoS-related usage spikes on protected [Amazon EC2](https://aws.amazon.com/ec2/), [AWS Elastic Load Balancer (ELB)](https://aws.amazon.com/elasticloadbalancing/), [Amazon CloudFront](https://aws.amazon.com/cloudfront/), [AWS Global Accelerator](https://aws.amazon.com/global-accelerator/), and [Amazon Route 53](https://aws.amazon.com/route53/) resources, which may offset other costs. If any of these protected resources scale up in response to a DDoS attack, you can request Shield Advanced service credits through your regular AWS Support channel.
