@@ -30,7 +30,7 @@ The following services and solutions may used in the provisioning and usage of S
 * [AWS Lambda](https://aws.amazon.com/lambda/)  (for automated building of the SDCA stack and Security Reference Architecture code)
 * [Amazon S3](https://aws.amazon.com/s3/)  (used to create a staging bucket and for configuring logs)
 
-The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually in AWS Console or CLI. 
+The following AWS services are NOT enabled by the SDCA sample code, but are included in the price of AWS Shield Advanced. These may be enabled in the future by the SDCA templates, but for now must be done manually in AWS Console or AWS CLI. 
 * [AWS Firewall Manager](https://aws.amazon.com/firewall-manager/)
 * [AWS Web Application Firewall (WAF)](https://aws.amazon.com/waf/)
 
