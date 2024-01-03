@@ -43,12 +43,7 @@ The IaC template is built upon the [AWS Security Reference Architecture (SRA)](h
 
 ## How to use SDCA templates
 ### CloudFormation version
-1. Download the SDCA templates from GitHub
-2. Use CloudFormation in AWS Console, CLI or API
-3. SDCA automatically creates an Amazon S3 staging bucket.
-4. It automatically downloads the latest Security Reference Architecture code from the GitHub repo. 
-5. It automatically kicks off a CodeBuild project and Lambdas to begin executing the code to enable only the services needed for SDCA. 
-6. It should complete in approximately 20 minutes.
+* [How to configure and use the AWS CloudFormation version in AWS Console and AWS CLI](/CloudFormation/README.md)
 
 ### Terraform version
 Coming soon!
