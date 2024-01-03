@@ -43,7 +43,7 @@ The IaC template is built upon the [AWS Security Reference Architecture (SRA)](h
 
 ## How to use SDCA templates
 ### CloudFormation version
-* [How to configure and use the AWS CloudFormation version in AWS Console and AWS CLI](/CloudFormation/README.md)
+* [How to configure and use the SDCA AWS CloudFormation templates in AWS Console and AWS CLI](/CloudFormation/README.md)
 
 ### Terraform version
 Coming soon!
