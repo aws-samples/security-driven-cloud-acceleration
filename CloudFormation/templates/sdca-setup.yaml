@@ -4,7 +4,7 @@
 ########################################################################
 AWSTemplateFormatVersion: '2010-09-09'
 Description:
-  Creates the SDCA CodeBuild Project that deploys the AWS SRA GuardDuty and Security Hub solutions (sdca-1u0pfn6c9)
+  Creates the SDCA CodeBuild Project that deploys the AWS SRA modules and best practices for AWS Security Hub, Amazon GuardDuty, AWS KMS, and AWS Shield Advanced. (sdca-1u0pfn6c9)
 Metadata:
   SRA:
     Version: 1.0
