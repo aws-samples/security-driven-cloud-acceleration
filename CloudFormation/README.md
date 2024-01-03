@@ -1,4 +1,4 @@
-# AWS Security Drive Cloud Adoption (SDCA)<!-- omit in toc -->
+# AWS Security-Driven Cloud Acceleration (SDCA) CloudFormation Templates <!-- omit in toc -->
 
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: CC-BY-SA-4.0
 
