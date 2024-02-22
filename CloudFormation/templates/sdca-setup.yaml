@@ -1308,11 +1308,17 @@ Resources:
         pDeployShieldSolution: !Ref pDeployShieldSolution
         pLambdaLogGroupKmsKey: !Ref pLambdaLogGroupKmsKey
         pConfigureDRTTeamAccess: !Ref pConfigureDRTTeamAccess
-        pResourcesToProtect: !Ref pResourcesToProtect
-        pShieldAccountsToProtect: !Ref pShieldAccountsToProtect
+        pResourcesToProtect: !Join
+          - ','
+          - !Ref pResourcesToProtect
+        pShieldAccountsToProtect: !Join
+          - ','
+          - !Ref pShieldAccountsToProtect
         pShieldDRTRoleName: !Ref pShieldDRTRoleName
         pShieldAutoRenew: !Ref pShieldAutoRenew
-        pShieldDRTLogBuckets: !Ref pShieldDRTLogBuckets
+        pShieldDRTLogBuckets: !Join
+          - ','
+          - !Ref pShieldDRTLogBuckets
         pShieldWarning: !Ref pShieldWarning
         pProtectionGroup0AccountId: !Ref pProtectionGroup0AccountId
         pProtectionGroup0Id: !Ref pProtectionGroup0Id
