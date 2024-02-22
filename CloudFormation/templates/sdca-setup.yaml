@@ -44,6 +44,7 @@ Metadata:
         Parameters:
           - pCodeBuildProjectLambdaRoleName
           - pCodeBuildProjectLambdaFunctionName
+          - pCreateCodeBuildLogGroup
       - Label:
           default: SRA Solutions to deploy (more settings for each are found below)
         Parameters:
@@ -222,7 +223,7 @@ Metadata:
       pResourcesToProtect:
         default: Resource To Protect
       pShieldAccountsToProtect:
-        default: Shield Accounts ToP rotect
+        default: Shield Accounts To Protect
       pShieldDRTRoleName:
         default: Shield DRT Role Name
       pShieldAutoRenew:
@@ -567,6 +568,7 @@ Parameters:
       Enables AWS Shield Advanced for a specific AWS resource. The resource can be an Amazon CloudFront distribution, Elastic Load Balancing load
       balancer, Elastic IP Address, or an Amazon Route 53 hosted zone.
     Type: CommaDelimitedList
+    Default: 'arn:aws:cloudfront::111111111111:distribution/ABCDEFGHIJKLMN'
   pShieldAccountsToProtect:
     AllowedPattern: '^(ALL|(\d{12})(,(\d{12}))*?)$'
     ConstraintDescription: 'Enter "ALL" or a comma-separated list of AWS account numbers without spaces, e.g., "123456789012,234567890123"'
