@@ -14,6 +14,7 @@ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-
 - [Config in Management Account Architecture Details](#config-in-management-account-architecture-details)
 - [Security Hub Architecture Details](#security-hub-architecture-details)
 - [GuardDuty Architecture Details](#guardduty-architecture-details)
+- [Shield Advanced Architecture Details](#shield-advanced-architecture-details)
 
 ## Introduction<!-- omit in toc -->
 
@@ -61,11 +62,11 @@ In the CloudFormation service console, navigate to the stacks area.
 In the stacks area, create a stack, and then select the "Upload a template file" option.  Click on "Next", then follow the process to deploy the stack.
 Be sure to specify the appropriate parameters for the template as needed.
 
-<!-- - IMPORTANT: If `AWS Organizations` is being used without AWS Control Tower, you must also specify the following parameter values as you create the stack:
+- IMPORTANT: If `AWS Organizations` is being used without AWS Control Tower, you must also specify the following parameter values as you create the stack:
   - `pControlTower` as `false`
   - `pLogArchiveAccountId` as the AWS Account Id of the account designated to be the `Log Archive` account.
   - `pSecurityAccountId` as the AWS Account Id of the account designated to be the `Security Tooling` account.
-  - `pGovernedRegions` as a list of AWS regions separated by commas -->
+  - `pGovernedRegions` as a list of AWS regions separated by commas
 
 #### II. (Option B) Deployment using the AWS CLI
 
@@ -79,11 +80,11 @@ Prepare and run the `aws cloudformation deploy` command to launch the template. 
 
 - Be sure to alter the folder/path for the `sdca-setup.yaml` template-file appropriately (replace `<path to template file>`)
 - Be sure to specify the proper parameter overrides and specify the alarm email address (`<email address>`)
-<!-- - If `AWS Organizations` is being used without AWS Control Tower, you must also specify the following parameter values as you create the stack:
+- If `AWS Organizations` is being used without AWS Control Tower, you must also specify the following parameter values as you create the stack:
   - `pControlTower` as `false`
   - `pLogArchiveAccountId` as the AWS Account Id of the account designated to be the `Log Archive` account.
   - `pSecurityAccountId` as the AWS Account Id of the account designated to be the `Security Tooling` account.
-  - `pGovernedRegions` as a list of AWS regions separated by commas -->
+  - `pGovernedRegions` as a list of AWS regions separated by commas
 
 ###### Example Command To Launch The Template in AWS Control Tower landing zone<!-- omit in toc -->
 
@@ -131,3 +132,9 @@ See [AWS SRA Security Hub Deployed Resource Details](https://github.com/aws-samp
 See [AWS SRA GuardDuty Deployed Resource Details](https://github.com/aws-samples/aws-security-reference-architecture-examples/tree/main/aws_sra_examples/solutions/guardduty/guardduty_org#deployed-resource-details) for more information.
 
 ![GuardDuty](https://raw.githubusercontent.com/aws-samples/aws-security-reference-architecture-examples/main/aws_sra_examples/solutions/guardduty/guardduty_org/documentation/guardduty-org.png)
+
+### Shield Advanced Architecture Details
+
+See [AWS SRA Shield Advanced Deployed Resource Details](https://github.com/aws-samples/aws-security-reference-architecture-examples/tree/main/aws_sra_examples/solutions/shield_advanced/shield_advanced#deployed-resource-details) for more information.
+
+![Shield Advanced](https://raw.githubusercontent.com/aws-samples/aws-security-reference-architecture-examples/main/aws_sra_examples/solutions/shield_advanced/shield_advanced/documentation/shield.png)
